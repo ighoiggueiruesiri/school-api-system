@@ -1,0 +1,1842 @@
+[
+{
+    "model": "sessions.session",
+    "pk": "6gxdmumqija8g4id5cd2h1s4b1avuetb",
+    "fields": {
+        "session_data": ".eJxVjjsOwjAQRO_imlg2Xq93Kek5Q2R7HRJAiZRPhbg7jpQCupHmvdG8VRu3tW-3pcztIOqisvfoqIPGijUNIPmGMpSahAsFZwuSOv1qKeZnGXdXHnG8TzpP4zoPSe-IPtpF3yYpr-vB_g30cemrnVw8ewyI7hzZCHioPwwH5JKcSGc6T8iZvFRQCkhicJmDdcQYgNXnC2gJP6o:1wPKAs:l5A2NuT-8abX8K7l27tGQWGoZXObVCfNP1Q0Ef1rmCc",
+        "expire_date": "2026-06-02T13:07:54.137Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 1,
+    "fields": {
+        "token": 2,
+        "blacklisted_at": "2026-05-21T22:26:27.007Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 2,
+    "fields": {
+        "token": 3,
+        "blacklisted_at": "2026-05-21T22:30:22.916Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 3,
+    "fields": {
+        "token": 4,
+        "blacklisted_at": "2026-05-21T22:32:13.818Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 4,
+    "fields": {
+        "token": 7,
+        "blacklisted_at": "2026-05-21T23:16:28.147Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 5,
+    "fields": {
+        "token": 8,
+        "blacklisted_at": "2026-05-21T23:17:38.921Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 6,
+    "fields": {
+        "token": 9,
+        "blacklisted_at": "2026-05-21T23:18:05.185Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 7,
+    "fields": {
+        "token": 10,
+        "blacklisted_at": "2026-05-21T23:18:15.633Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 8,
+    "fields": {
+        "token": 11,
+        "blacklisted_at": "2026-05-21T23:49:27.252Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 9,
+    "fields": {
+        "token": 12,
+        "blacklisted_at": "2026-05-22T12:09:20.379Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 10,
+    "fields": {
+        "token": 13,
+        "blacklisted_at": "2026-05-23T17:08:31.380Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 11,
+    "fields": {
+        "token": 14,
+        "blacklisted_at": "2026-05-23T18:02:19.144Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 12,
+    "fields": {
+        "token": 15,
+        "blacklisted_at": "2026-05-23T22:19:34.692Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 13,
+    "fields": {
+        "token": 16,
+        "blacklisted_at": "2026-05-23T22:20:17.718Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 14,
+    "fields": {
+        "token": 17,
+        "blacklisted_at": "2026-05-23T22:22:01.941Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 15,
+    "fields": {
+        "token": 18,
+        "blacklisted_at": "2026-05-23T22:23:34.851Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 16,
+    "fields": {
+        "token": 19,
+        "blacklisted_at": "2026-05-23T22:24:05.194Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 17,
+    "fields": {
+        "token": 20,
+        "blacklisted_at": "2026-05-23T22:25:52.120Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 18,
+    "fields": {
+        "token": 21,
+        "blacklisted_at": "2026-05-23T22:26:24.021Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 19,
+    "fields": {
+        "token": 22,
+        "blacklisted_at": "2026-05-23T22:33:31.820Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 20,
+    "fields": {
+        "token": 23,
+        "blacklisted_at": "2026-05-24T22:15:07.416Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 21,
+    "fields": {
+        "token": 24,
+        "blacklisted_at": "2026-05-24T22:27:25.378Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 22,
+    "fields": {
+        "token": 25,
+        "blacklisted_at": "2026-05-24T22:28:30.977Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 23,
+    "fields": {
+        "token": 26,
+        "blacklisted_at": "2026-05-24T22:29:03.908Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 24,
+    "fields": {
+        "token": 27,
+        "blacklisted_at": "2026-05-24T22:29:47.054Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 25,
+    "fields": {
+        "token": 28,
+        "blacklisted_at": "2026-05-24T22:31:01.380Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 26,
+    "fields": {
+        "token": 29,
+        "blacklisted_at": "2026-05-24T22:32:28.258Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 27,
+    "fields": {
+        "token": 30,
+        "blacklisted_at": "2026-05-24T22:32:57.491Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 28,
+    "fields": {
+        "token": 31,
+        "blacklisted_at": "2026-05-24T22:35:19.931Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 29,
+    "fields": {
+        "token": 32,
+        "blacklisted_at": "2026-05-24T22:35:54.908Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 30,
+    "fields": {
+        "token": 33,
+        "blacklisted_at": "2026-05-25T00:56:57.753Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 31,
+    "fields": {
+        "token": 34,
+        "blacklisted_at": "2026-05-25T01:03:18.790Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 32,
+    "fields": {
+        "token": 35,
+        "blacklisted_at": "2026-05-25T01:04:50.137Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 33,
+    "fields": {
+        "token": 36,
+        "blacklisted_at": "2026-05-25T01:05:55.297Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 34,
+    "fields": {
+        "token": 37,
+        "blacklisted_at": "2026-05-25T01:07:34.690Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 35,
+    "fields": {
+        "token": 38,
+        "blacklisted_at": "2026-05-25T16:02:16.160Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 36,
+    "fields": {
+        "token": 39,
+        "blacklisted_at": "2026-05-25T16:12:32.842Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 37,
+    "fields": {
+        "token": 40,
+        "blacklisted_at": "2026-05-25T18:08:50.595Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 38,
+    "fields": {
+        "token": 41,
+        "blacklisted_at": "2026-05-25T18:09:17.160Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 39,
+    "fields": {
+        "token": 42,
+        "blacklisted_at": "2026-05-25T18:19:55.859Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 40,
+    "fields": {
+        "token": 43,
+        "blacklisted_at": "2026-05-25T18:21:37.780Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 41,
+    "fields": {
+        "token": 44,
+        "blacklisted_at": "2026-05-25T18:23:45.886Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 42,
+    "fields": {
+        "token": 45,
+        "blacklisted_at": "2026-05-25T18:31:31.905Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 43,
+    "fields": {
+        "token": 46,
+        "blacklisted_at": "2026-05-25T18:32:27.161Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 44,
+    "fields": {
+        "token": 47,
+        "blacklisted_at": "2026-05-25T18:32:57.163Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 45,
+    "fields": {
+        "token": 48,
+        "blacklisted_at": "2026-05-25T18:33:14.031Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 46,
+    "fields": {
+        "token": 49,
+        "blacklisted_at": "2026-05-25T22:04:44.473Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 47,
+    "fields": {
+        "token": 50,
+        "blacklisted_at": "2026-05-25T22:05:01.585Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 48,
+    "fields": {
+        "token": 51,
+        "blacklisted_at": "2026-05-25T22:05:25.169Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 49,
+    "fields": {
+        "token": 52,
+        "blacklisted_at": "2026-05-25T22:48:53.138Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 50,
+    "fields": {
+        "token": 53,
+        "blacklisted_at": "2026-05-25T22:49:18.500Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 51,
+    "fields": {
+        "token": 55,
+        "blacklisted_at": "2026-05-26T11:00:35.920Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 52,
+    "fields": {
+        "token": 59,
+        "blacklisted_at": "2026-05-27T02:13:32.227Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 53,
+    "fields": {
+        "token": 60,
+        "blacklisted_at": "2026-05-27T02:21:25.059Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 54,
+    "fields": {
+        "token": 61,
+        "blacklisted_at": "2026-05-27T03:08:43.706Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 55,
+    "fields": {
+        "token": 62,
+        "blacklisted_at": "2026-05-27T03:15:13.776Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 56,
+    "fields": {
+        "token": 63,
+        "blacklisted_at": "2026-05-27T03:30:58.886Z"
+    }
+},
+{
+    "model": "token_blacklist.blacklistedtoken",
+    "pk": 57,
+    "fields": {
+        "token": 64,
+        "blacklisted_at": "2026-05-27T03:40:11.684Z"
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$rMYJaB9q3xyKOM00AtAIKc$IYof3vPFAVVajK8RVK5/nYo4erb3ndxeTMDn7OmwhYQ=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "parent5@gsa.com",
+        "first_name": "parent5",
+        "last_name": "gsa",
+        "phone": "07044444444",
+        "role": "parent",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-23T22:08:42.803Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$TC8qGUlFtpZQMXUG7L47NZ$I2zwGa7x66qICAN3A3/J63NhYMJZftjizTXMzBtvDu0=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "editor@gsa.com",
+        "first_name": "editor",
+        "last_name": "gsa",
+        "phone": "07044444444",
+        "role": "editor",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-26T10:50:31.336Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$dgcttIM4JYUj8AOz9iezbF$rHkFCjOo8eTjDU6TaU7tq8NBhPkaK+7UXFyNxlshhCs=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "parent2@gsa.com",
+        "first_name": "parent2",
+        "last_name": "gsa",
+        "phone": "09099999999",
+        "role": "parent",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-23T17:35:25.707Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$mTXKCp7dlOeW9Dcrfabkcr$qTIONREk7MmJJ9qyixzBNvneOOg2OoqT5Kvz9/Up46o=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "parent3@gsa.com",
+        "first_name": "parent3",
+        "last_name": "gsa",
+        "phone": "07088888888",
+        "role": "parent",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-23T17:36:10.740Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$m6YITWOVz4ouEzve1YfcO4$gXHNqFbSccb4rzF2HJa0x4ql6TENEVC8cqi6jnRKnZI=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "parent4@gsa.com",
+        "first_name": "parent4",
+        "last_name": "gsa",
+        "phone": "09033333333",
+        "role": "parent",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-23T22:08:02.197Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$sy8NJlrCAsmZCYj0jX6hyh$4vZ0jGhZeOy35SduUeNSu4Cs55p9uH7iEJ1+li2hCY0=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "teacher2@gsa.com",
+        "first_name": "teacher2",
+        "last_name": "gsa",
+        "phone": "07011111111",
+        "role": "teacher",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-21T23:41:07.878Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$ZPs3rH05JCxSDCmX5kvY3l$rAxsq9bZhXtB1qdJnsbj5oG52Fb1uoi9wuDt54EAwDc=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "teacher4@gsa.com",
+        "first_name": "teacher4",
+        "last_name": "gsa",
+        "phone": "09011111111",
+        "role": "teacher",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-21T23:42:00.343Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$BTO7Uk3fnPc6b16pUMuMCF$kcDEujQE4ww69vz6kEum5Pycy4ys/Fik88lmFxeXkZY=",
+        "last_login": "2026-05-19T13:07:54.132Z",
+        "is_superuser": true,
+        "email": "igho@gmail.com",
+        "first_name": "igho",
+        "last_name": "noctua",
+        "phone": "09022222222",
+        "role": "admin",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": true,
+        "date_joined": "2026-05-19T13:07:07.740Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$JuWOQnALJdfQMOyloQX9Qk$tMfsahmnAKy82uO1+b8dFOg9pGjP3qdNnuDlprxVRmA=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "teacher@gsa.com",
+        "first_name": "teacher",
+        "last_name": "gsa",
+        "phone": "07011111111",
+        "role": "teacher",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-19T23:13:25.483Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$DjZggNVxT1RuGcxdO12wUr$iSWzQiquR0fXgS3DwpAxWUZ/94R6ee556XQYLACtQ+0=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "parent@gsa.com",
+        "first_name": "parent",
+        "last_name": "test",
+        "phone": "08011111111",
+        "role": "parent",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-19T22:58:22.045Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.user",
+    "fields": {
+        "password": "pbkdf2_sha256$720000$20dgQgAg2ZihAHkJSnOSzJ$OhOtmbiWciHFuWlNYt74V82D2A/kY7YUe2LVlpNRskE=",
+        "last_login": null,
+        "is_superuser": false,
+        "email": "teacher3@gsa.com",
+        "first_name": "teacher3",
+        "last_name": "gsa",
+        "phone": "09022222222",
+        "role": "teacher",
+        "profile_photo": "",
+        "is_active": true,
+        "is_staff": false,
+        "date_joined": "2026-05-21T23:40:26.400Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "school.classroom",
+    "pk": 1,
+    "fields": {
+        "name": "Playgroup",
+        "level": 1,
+        "teacher": [
+            "teacher@gsa.com"
+        ],
+        "capacity": 10
+    }
+},
+{
+    "model": "school.classroom",
+    "pk": 2,
+    "fields": {
+        "name": "Nursery 1",
+        "level": 2,
+        "teacher": [
+            "teacher2@gsa.com"
+        ],
+        "capacity": 8
+    }
+},
+{
+    "model": "school.classroom",
+    "pk": 4,
+    "fields": {
+        "name": "Nursery 3",
+        "level": 3,
+        "teacher": [
+            "teacher3@gsa.com"
+        ],
+        "capacity": 7
+    }
+},
+{
+    "model": "school.term",
+    "pk": 1,
+    "fields": {
+        "name": "first",
+        "academic_year": "2025/2026",
+        "start_date": "2025-09-01",
+        "end_date": "2025-12-31",
+        "is_current": false
+    }
+},
+{
+    "model": "school.term",
+    "pk": 2,
+    "fields": {
+        "name": "second",
+        "academic_year": "2025/2026",
+        "start_date": "2026-01-01",
+        "end_date": "2026-04-30",
+        "is_current": true
+    }
+},
+{
+    "model": "school.term",
+    "pk": 3,
+    "fields": {
+        "name": "third",
+        "academic_year": "2025/2026",
+        "start_date": "2026-05-01",
+        "end_date": "2026-07-31",
+        "is_current": false
+    }
+},
+{
+    "model": "school.student",
+    "pk": "47a58c9f-9ad6-47ab-b909-2b21bb97042f",
+    "fields": {
+        "admission_number": "GSA-2026-0002",
+        "first_name": "student2",
+        "last_name": "gsa",
+        "date_of_birth": "2023-05-16",
+        "gender": "male",
+        "profile_photo": "",
+        "current_class": 2,
+        "admission_date": "2026-05-23",
+        "is_active": true,
+        "allergies": "",
+        "notes": "",
+        "created_at": "2026-05-23T22:16:02.458Z",
+        "parents": [
+            [
+                "parent2@gsa.com"
+            ]
+        ]
+    }
+},
+{
+    "model": "school.student",
+    "pk": "569f96a5-bec1-40c3-b795-03a9c3651af4",
+    "fields": {
+        "admission_number": "GSA-2026-0001",
+        "first_name": "student",
+        "last_name": "gsa",
+        "date_of_birth": "2024-03-05",
+        "gender": "male",
+        "profile_photo": "",
+        "current_class": 1,
+        "admission_date": "2026-05-19",
+        "is_active": true,
+        "allergies": "",
+        "notes": "",
+        "created_at": "2026-05-19T23:17:54.904Z",
+        "parents": [
+            [
+                "parent@gsa.com"
+            ]
+        ]
+    }
+},
+{
+    "model": "school.student",
+    "pk": "c0ca35b2-d8f4-4667-9dd3-2bc47f131b70",
+    "fields": {
+        "admission_number": "GSA-2026-0003",
+        "first_name": "student3",
+        "last_name": "gsa",
+        "date_of_birth": "2022-06-15",
+        "gender": "female",
+        "profile_photo": "",
+        "current_class": 4,
+        "admission_date": "2026-05-23",
+        "is_active": true,
+        "allergies": "",
+        "notes": "",
+        "created_at": "2026-05-23T22:17:16.837Z",
+        "parents": [
+            [
+                "parent3@gsa.com"
+            ]
+        ]
+    }
+},
+{
+    "model": "school.student",
+    "pk": "e980ecc3-4132-43e9-ab54-23d23a6ef7ae",
+    "fields": {
+        "admission_number": "GSA-2026-0004",
+        "first_name": "Test",
+        "last_name": "Rack",
+        "date_of_birth": "2026-05-24",
+        "gender": "female",
+        "profile_photo": "",
+        "current_class": 1,
+        "admission_date": "2026-05-24",
+        "is_active": false,
+        "allergies": "",
+        "notes": "",
+        "created_at": "2026-05-24T21:14:20.343Z",
+        "parents": []
+    }
+},
+{
+    "model": "school.attendance",
+    "pk": 1,
+    "fields": {
+        "student": "569f96a5-bec1-40c3-b795-03a9c3651af4",
+        "date": "2026-05-24",
+        "status": "late",
+        "reason": "Sick",
+        "recorded_by": [
+            "teacher@gsa.com"
+        ],
+        "term": 2,
+        "created_at": "2026-05-24T22:29:35.534Z"
+    }
+},
+{
+    "model": "school.attendance",
+    "pk": 2,
+    "fields": {
+        "student": "47a58c9f-9ad6-47ab-b909-2b21bb97042f",
+        "date": "2026-05-24",
+        "status": "present",
+        "reason": "",
+        "recorded_by": [
+            "teacher2@gsa.com"
+        ],
+        "term": 2,
+        "created_at": "2026-05-24T22:32:52.405Z"
+    }
+},
+{
+    "model": "school.invoice",
+    "pk": "19b9ecb0-5b8d-42d0-9a19-782c5ac98899",
+    "fields": {
+        "invoice_number": "INV-GSA-2026-0001-2-29DA22",
+        "student": "569f96a5-bec1-40c3-b795-03a9c3651af4",
+        "term": 2,
+        "description": "School fees second term",
+        "amount": "350000.00",
+        "amount_paid": "350000.00",
+        "status": "paid",
+        "due_date": "2026-05-25",
+        "created_at": "2026-05-25T18:08:33.934Z"
+    }
+},
+{
+    "model": "school.invoice",
+    "pk": "8edd76c5-ab67-4073-b851-c90e214ba4d7",
+    "fields": {
+        "invoice_number": "INV-GSA-2026-0003-2-4C07A1",
+        "student": "c0ca35b2-d8f4-4667-9dd3-2bc47f131b70",
+        "term": 2,
+        "description": "school fees 2025/2026",
+        "amount": "550000.00",
+        "amount_paid": "0.00",
+        "status": "unpaid",
+        "due_date": "2026-05-29",
+        "created_at": "2026-05-26T15:49:55.701Z"
+    }
+},
+{
+    "model": "school.invoice",
+    "pk": "c2df16e6-c427-40a7-972e-4e863b6a1c06",
+    "fields": {
+        "invoice_number": "INV-GSA-2026-0002-2-824848",
+        "student": "47a58c9f-9ad6-47ab-b909-2b21bb97042f",
+        "term": 2,
+        "description": "Second term school fees",
+        "amount": "400000.00",
+        "amount_paid": "400000.00",
+        "status": "paid",
+        "due_date": "2026-05-25",
+        "created_at": "2026-05-25T18:10:45.891Z"
+    }
+},
+{
+    "model": "school.payment",
+    "pk": "7d1f501e-3fe5-4857-8163-515eb16de64f",
+    "fields": {
+        "invoice": "19b9ecb0-5b8d-42d0-9a19-782c5ac98899",
+        "amount": "350000.00",
+        "method": "cash",
+        "reference": "REF1234",
+        "paid_by": [
+            "igho@gmail.com"
+        ],
+        "notes": "",
+        "created_at": "2026-05-25T18:09:54.048Z"
+    }
+},
+{
+    "model": "school.payment",
+    "pk": "ec03d28f-924c-4413-abec-5f4bca54cd5e",
+    "fields": {
+        "invoice": "c2df16e6-c427-40a7-972e-4e863b6a1c06",
+        "amount": "400000.00",
+        "method": "bank_transfer",
+        "reference": "XWE990933",
+        "paid_by": [
+            "igho@gmail.com"
+        ],
+        "notes": "",
+        "created_at": "2026-05-25T18:16:16.083Z"
+    }
+},
+{
+    "model": "school.announcement",
+    "pk": 2,
+    "fields": {
+        "title": "Check",
+        "body": "Another check",
+        "audience": "all",
+        "author": [
+            "igho@gmail.com"
+        ],
+        "created_at": "2026-05-23T17:31:47.903Z"
+    }
+},
+{
+    "model": "school.assignment",
+    "pk": 2,
+    "fields": {
+        "title": "English test",
+        "description": "Phonics & Letter-Object Matching\nDraw a line to match the letter to the picture that starts with its sound.\nA  ->  🍎 (Picture of an Apple)\nB  ->  🎈 (Picture of a Balloon)\nC  ->  🐱 (Picture of a Cat)\nD  ->  🐕 (Picture of a Dog)",
+        "type": "homework",
+        "classroom": 1,
+        "teacher": [
+            "teacher@gsa.com"
+        ],
+        "term": 2,
+        "due_date": "2026-05-25",
+        "created_at": "2026-05-25T18:31:19.619Z"
+    }
+},
+{
+    "model": "school.developmentreport",
+    "pk": 1,
+    "fields": {
+        "student": "569f96a5-bec1-40c3-b795-03a9c3651af4",
+        "term": 2,
+        "written_by": [
+            "teacher@gsa.com"
+        ],
+        "comment": "check",
+        "strengths": "",
+        "areas_to_improve": "",
+        "confidence": 3,
+        "teamwork": 3,
+        "is_published": true,
+        "created_at": "2026-05-25T01:02:36.947Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 1,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "f036e102b03543b6b3112a3a946ced18",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc3OTgzNTcyNCwiaWF0IjoxNzc5MjMwOTI0LCJqdGkiOiJmMDM2ZTEwMmIwMzU0M2I2YjMxMTJhM2E5NDZjZWQxOCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.uMR91qyZ28z0AtcGmujwKVl35YN2PZqEjd6DFCT1qHM",
+        "created_at": "2026-05-19T22:48:44.504Z",
+        "expires_at": "2026-05-26T22:48:44Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 2,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "6aef38e657914ed6870e21414e1e0ec7",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAwNDgyNCwiaWF0IjoxNzc5NDAwMDI0LCJqdGkiOiI2YWVmMzhlNjU3OTE0ZWQ2ODcwZTIxNDE0ZTFlMGVjNyIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.DWrZ91Khu0AwSbutfb3wF6N_6lKWlSYXxvG6WLIWK4k",
+        "created_at": "2026-05-21T21:47:04.303Z",
+        "expires_at": "2026-05-28T21:47:04Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 3,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "e922e2e889f741919ceedefda4d17615",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAwNzE5NiwiaWF0IjoxNzc5NDAyMzk2LCJqdGkiOiJlOTIyZTJlODg5Zjc0MTkxOWNlZWRlZmRhNGQxNzYxNSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.XALJqkUl00bYXi_YVoFjs2tv4XA296_KpUx0Fxo2PK0",
+        "created_at": "2026-05-21T22:26:36.028Z",
+        "expires_at": "2026-05-28T22:26:36Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 4,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "d734017eed034d89b8a62446369c84e8",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAwNzQ0NSwiaWF0IjoxNzc5NDAyNjQ1LCJqdGkiOiJkNzM0MDE3ZWVkMDM0ZDg5YjhhNjI0NDYzNjljODRlOCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.F1BSjII8kNxYnnbyek1rFNlxoveGAQxyiLi846-IHUo",
+        "created_at": "2026-05-21T22:30:45.809Z",
+        "expires_at": "2026-05-28T22:30:45Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 5,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "f49f635823054585afdbdcf29ecc2391",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAwNzU2OCwiaWF0IjoxNzc5NDAyNzY4LCJqdGkiOiJmNDlmNjM1ODIzMDU0NTg1YWZkYmRjZjI5ZWNjMjM5MSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.r0BMCrqMaTIsHCBg-dib49G0uPSmxNahiZujAxXCSrk",
+        "created_at": "2026-05-21T22:32:48.646Z",
+        "expires_at": "2026-05-28T22:32:48Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 6,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "b458eeed0a6340b3925e1a8dc79e7da7",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAwNzk2NSwiaWF0IjoxNzc5NDAzMTY1LCJqdGkiOiJiNDU4ZWVlZDBhNjM0MGIzOTI1ZTFhOGRjNzllN2RhNyIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.xk0KNuVVuAE637n01Pav27miV-gDFKy-KM8ZcOLFq54",
+        "created_at": "2026-05-21T22:39:25.154Z",
+        "expires_at": "2026-05-28T22:39:25Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 7,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "d8039cbb6ca1422d984900f907d738cc",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAxMDE2OSwiaWF0IjoxNzc5NDA1MzY5LCJqdGkiOiJkODAzOWNiYjZjYTE0MjJkOTg0OTAwZjkwN2Q3MzhjYyIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.TgLOcQC0YOKYCRcCKVg9uF_D_-tcRX-2Q7RmNncLu7E",
+        "created_at": "2026-05-21T23:16:09.905Z",
+        "expires_at": "2026-05-28T23:16:09Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 8,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "af610ab482c4433cb33403262a2c76dd",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAxMDIyMSwiaWF0IjoxNzc5NDA1NDIxLCJqdGkiOiJhZjYxMGFiNDgyYzQ0MzNjYjMzNDAzMjYyYTJjNzZkZCIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.QBzEtHOLHxMcpCSesC67YFiVfO50SPNqQyv17iyjNds",
+        "created_at": "2026-05-21T23:17:01.263Z",
+        "expires_at": "2026-05-28T23:17:01Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 9,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "8808ed210700421fa92036d1637e5454",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAxMDI4MCwiaWF0IjoxNzc5NDA1NDgwLCJqdGkiOiI4ODA4ZWQyMTA3MDA0MjFmYTkyMDM2ZDE2MzdlNTQ1NCIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.0tu5ESmFdwH94pUs-U6OefHYRdGvTmsUDkb8hU_6AHs",
+        "created_at": "2026-05-21T23:18:00.282Z",
+        "expires_at": "2026-05-28T23:18:00Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 10,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "510fdca4118f4926a4eb0e9207f612eb",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAxMDI5MiwiaWF0IjoxNzc5NDA1NDkyLCJqdGkiOiI1MTBmZGNhNDExOGY0OTI2YTRlYjBlOTIwN2Y2MTJlYiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.pnI_i_JD-_zBb6wQV2shWRfRQUUPz4bTBhtnHg3ZXe4",
+        "created_at": "2026-05-21T23:18:12.925Z",
+        "expires_at": "2026-05-28T23:18:12Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 11,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "a7dec954bda04405bf5a903b762ad054",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDAxMTU3OCwiaWF0IjoxNzc5NDA2Nzc4LCJqdGkiOiJhN2RlYzk1NGJkYTA0NDA1YmY1YTkwM2I3NjJhZDA1NCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.biNUOzJYCwqJZkbFi1JIYZov8HOagdTeWxTvRC7oevs",
+        "created_at": "2026-05-21T23:39:38.181Z",
+        "expires_at": "2026-05-28T23:39:38Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 12,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "dcb483d6fb464672a823dac9847e1298",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDA1NjU1NCwiaWF0IjoxNzc5NDUxNzU0LCJqdGkiOiJkY2I0ODNkNmZiNDY0NjcyYTgyM2RhYzk4NDdlMTI5OCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.xAfASSvUZ_QVMO8pG160Lqgdxhgp6WtBCkkZwBvMLG8",
+        "created_at": "2026-05-22T12:09:14.857Z",
+        "expires_at": "2026-05-29T12:09:14Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 13,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "3156fd64f9444f8c9a2ac265269d6e29",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE2MDA3MywiaWF0IjoxNzc5NTU1MjczLCJqdGkiOiIzMTU2ZmQ2NGY5NDQ0ZjhjOWEyYWMyNjUyNjlkNmUyOSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.AH-QhE66h155MrzM5B5uLySQo47HSDQ4h9FMMw8Q_P4",
+        "created_at": "2026-05-23T16:54:33.556Z",
+        "expires_at": "2026-05-30T16:54:33Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 14,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "701867a458c242dabe60224da4e610f3",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE2MDk0NywiaWF0IjoxNzc5NTU2MTQ3LCJqdGkiOiI3MDE4NjdhNDU4YzI0MmRhYmU2MDIyNGRhNGU2MTBmMyIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.2dk3UGOaI4qqfkrXxcctI2ic6CUDEfmzuoyljWRG2Is",
+        "created_at": "2026-05-23T17:09:07.676Z",
+        "expires_at": "2026-05-30T17:09:07Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 15,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "af70611862bb46319fa942ad9530b61f",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE2NDE0NiwiaWF0IjoxNzc5NTU5MzQ2LCJqdGkiOiJhZjcwNjExODYyYmI0NjMxOWZhOTQyYWQ5NTMwYjYxZiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.UY4jWfgSNy_BnyDR5-AqyoWBliCCn0Dfc4Z4C47b8tU",
+        "created_at": "2026-05-23T18:02:26.383Z",
+        "expires_at": "2026-05-30T18:02:26Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 16,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "0fe5e307eee54ab68a852b641400615a",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTU4MCwiaWF0IjoxNzc5NTc0NzgwLCJqdGkiOiIwZmU1ZTMwN2VlZTU0YWI2OGE4NTJiNjQxNDAwNjE1YSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.b8ORIJNEMvqQy2hSveLPF-6MSIyKsZGegwXlZBK2cu4",
+        "created_at": "2026-05-23T22:19:40.844Z",
+        "expires_at": "2026-05-30T22:19:40Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 17,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "7606ba384c2545849f5700d34fad2931",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTYyMiwiaWF0IjoxNzc5NTc0ODIyLCJqdGkiOiI3NjA2YmEzODRjMjU0NTg0OWY1NzAwZDM0ZmFkMjkzMSIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.sQEuP-5tQLl09BpbMxFkacnh6E8VWiEIDq-vwGsW07M",
+        "created_at": "2026-05-23T22:20:22.214Z",
+        "expires_at": "2026-05-30T22:20:22Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 18,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "c46866fc6a3a4e1c9d8fa0808c19248e",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTcyOSwiaWF0IjoxNzc5NTc0OTI5LCJqdGkiOiJjNDY4NjZmYzZhM2E0ZTFjOWQ4ZmEwODA4YzE5MjQ4ZSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.w20qYiKqfGu-uN31kBGaKf_X63rwXTWnHtD-1tYD4kY",
+        "created_at": "2026-05-23T22:22:09.177Z",
+        "expires_at": "2026-05-30T22:22:09Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 19,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "cb7343cc5a994097b897701d644109b9",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTgxOSwiaWF0IjoxNzc5NTc1MDE5LCJqdGkiOiJjYjczNDNjYzVhOTk0MDk3Yjg5NzcwMWQ2NDQxMDliOSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.9HNkIM4wzGAqlyCzZrEVLhg9PR6ppundnp6HxJrukoA",
+        "created_at": "2026-05-23T22:23:39.448Z",
+        "expires_at": "2026-05-30T22:23:39Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 20,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "7426b3187d9047a3a31054c364ad6f42",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTg1MSwiaWF0IjoxNzc5NTc1MDUxLCJqdGkiOiI3NDI2YjMxODdkOTA0N2EzYTMxMDU0YzM2NGFkNmY0MiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.bR6LZossmMw0sfXr3-dwS5s1YfmVLz7uRuC8Z6zgoWE",
+        "created_at": "2026-05-23T22:24:11.883Z",
+        "expires_at": "2026-05-30T22:24:11Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 21,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "f9c269e3ebd84ab1a44a5866a3d7f18a",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTk2NCwiaWF0IjoxNzc5NTc1MTY0LCJqdGkiOiJmOWMyNjllM2ViZDg0YWIxYTQ0YTU4NjZhM2Q3ZjE4YSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.dzJaKrUU1cYJ9ENUfL4UtKKUgQeOTiJI_vnxyEt7CBc",
+        "created_at": "2026-05-23T22:26:04.959Z",
+        "expires_at": "2026-05-30T22:26:04Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 22,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "51b03cad43fb4ba5b0dc7d60f001957a",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDE3OTk4OCwiaWF0IjoxNzc5NTc1MTg4LCJqdGkiOiI1MWIwM2NhZDQzZmI0YmE1YjBkYzdkNjBmMDAxOTU3YSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.xohCHN0us62mXXjlTXqHiwHb6Tqxc0DrmZHDlerTJG4",
+        "created_at": "2026-05-23T22:26:28.024Z",
+        "expires_at": "2026-05-30T22:26:28Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 23,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "b153703435db438a8f55d735d6656e34",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI1NzMyNywiaWF0IjoxNzc5NjUyNTI3LCJqdGkiOiJiMTUzNzAzNDM1ZGI0MzhhOGY1NWQ3MzVkNjY1NmUzNCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.MxvlARlw3vukBjSd8kfp5msgsmvyV7F_t7eCen4skdk",
+        "created_at": "2026-05-24T19:55:27.988Z",
+        "expires_at": "2026-05-31T19:55:27Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 24,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "f11b4764235144e1b601d703e0e25438",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NTcxMiwiaWF0IjoxNzc5NjYwOTEyLCJqdGkiOiJmMTFiNDc2NDIzNTE0NGUxYjYwMWQ3MDNlMGUyNTQzOCIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.oaW57Fq4oxjm0CARHGRCJWQ0Grh4oq3yQdxG2c2pymg",
+        "created_at": "2026-05-24T22:15:12.972Z",
+        "expires_at": "2026-05-31T22:15:12Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 25,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "81eba43121cc46b19bb8f7166640b365",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NjQ1MSwiaWF0IjoxNzc5NjYxNjUxLCJqdGkiOiI4MWViYTQzMTIxY2M0NmIxOWJiOGY3MTY2NjQwYjM2NSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.LZd0p3HlhK-37hgXs6JdGFkzD_HIttj7Mkx2klYN_sY",
+        "created_at": "2026-05-24T22:27:31.613Z",
+        "expires_at": "2026-05-31T22:27:31Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 26,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "11800f8417e8492bb3e816202bc979a0",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NjUxNiwiaWF0IjoxNzc5NjYxNzE2LCJqdGkiOiIxMTgwMGY4NDE3ZTg0OTJiYjNlODE2MjAyYmM5NzlhMCIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.h7gmOAbFx42LDZUy2EivEQJgIBzbU1-SQuIvLDGvSBA",
+        "created_at": "2026-05-24T22:28:36.244Z",
+        "expires_at": "2026-05-31T22:28:36Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 27,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "624e34bc24484a819786b62e0022fbef",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NjU1MCwiaWF0IjoxNzc5NjYxNzUwLCJqdGkiOiI2MjRlMzRiYzI0NDg0YTgxOTc4NmI2MmUwMDIyZmJlZiIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.aE6SHWTB0qvGCfvbFk5XZsns4y0-j8Ols0x97dtsBbY",
+        "created_at": "2026-05-24T22:29:10.614Z",
+        "expires_at": "2026-05-31T22:29:10Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 28,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "51660748150d4373b595f15a1d2372c8",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NjYwMiwiaWF0IjoxNzc5NjYxODAyLCJqdGkiOiI1MTY2MDc0ODE1MGQ0MzczYjU5NWYxNWExZDIzNzJjOCIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.pl0i4IVn2AXBfOom2f3sdW1ogXCrrB3ccVAmzI358K0",
+        "created_at": "2026-05-24T22:30:02.885Z",
+        "expires_at": "2026-05-31T22:30:02Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 29,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "f955676d64dc43bc81b966774f969ffa",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NjY2OCwiaWF0IjoxNzc5NjYxODY4LCJqdGkiOiJmOTU1Njc2ZDY0ZGM0M2JjODFiOTY2Nzc0Zjk2OWZmYSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.ULEQXptPdJFAqEWoi77A-ViRe3v3k_UKE696y6k5AeE",
+        "created_at": "2026-05-24T22:31:08.063Z",
+        "expires_at": "2026-05-31T22:31:08Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 30,
+    "fields": {
+        "user": [
+            "teacher2@gsa.com"
+        ],
+        "jti": "f61981ab27054c44931d8f7b68ec8035",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2Njc1NiwiaWF0IjoxNzc5NjYxOTU2LCJqdGkiOiJmNjE5ODFhYjI3MDU0YzQ0OTMxZDhmN2I2OGVjODAzNSIsInVzZXJfaWQiOiJiMTBiNTRhMS1mMWZkLTQ5OWMtOTdjYS03MTIxZTNkYTQ1ODQifQ.Ws_og5o8v6D9BzHUKxioqS-VlAXg-JjYc_8XVR2I434",
+        "created_at": "2026-05-24T22:32:36.914Z",
+        "expires_at": "2026-05-31T22:32:36Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 31,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "98a4d9a65b814bd7b4d7992a05637312",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2Njc4NCwiaWF0IjoxNzc5NjYxOTg0LCJqdGkiOiI5OGE0ZDlhNjViODE0YmQ3YjRkNzk5MmEwNTYzNzMxMiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.tHR7778K0u507KIfnPLdrisejJdFMH58-HV1mJAx7uU",
+        "created_at": "2026-05-24T22:33:04.906Z",
+        "expires_at": "2026-05-31T22:33:04Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 32,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "0a8288f8448f4123be37aa69492f796e",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2NjkyNSwiaWF0IjoxNzc5NjYyMTI1LCJqdGkiOiIwYTgyODhmODQ0OGY0MTIzYmUzN2FhNjk0OTJmNzk2ZSIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.LcINn9WW-USSvGcYBmuGSfGDQM0igz9LvCb1Z_x8nCo",
+        "created_at": "2026-05-24T22:35:25.816Z",
+        "expires_at": "2026-05-31T22:35:25Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 33,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "4612166cb844431985cccf2503212138",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI2Njk3NywiaWF0IjoxNzc5NjYyMTc3LCJqdGkiOiI0NjEyMTY2Y2I4NDQ0MzE5ODVjY2NmMjUwMzIxMjEzOCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.ThybdyOLEPBCDP700a8HstLQJuMMHMti1ll-Mll_7J4",
+        "created_at": "2026-05-24T22:36:17.819Z",
+        "expires_at": "2026-05-31T22:36:17Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 34,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "90450f65f29c43468c53ad4229573276",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI3NTQyMywiaWF0IjoxNzc5NjcwNjIzLCJqdGkiOiI5MDQ1MGY2NWYyOWM0MzQ2OGM1M2FkNDIyOTU3MzI3NiIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.dLm89QNafUjqiKm3aokxRSAHI0Zw9w2OvjAwBqADGhI",
+        "created_at": "2026-05-25T00:57:03.812Z",
+        "expires_at": "2026-06-01T00:57:03Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 35,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "2fbeabfd67b44e6a95498232fe5586fe",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI3NTgwNSwiaWF0IjoxNzc5NjcxMDA1LCJqdGkiOiIyZmJlYWJmZDY3YjQ0ZTZhOTU0OTgyMzJmZTU1ODZmZSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.RXCG2t7s8WcOSbd7t0QpzM0GLBGwV2zlwcfq1YW2_80",
+        "created_at": "2026-05-25T01:03:25.309Z",
+        "expires_at": "2026-06-01T01:03:25Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 36,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "19dbbf7520764fbfa6f0f65436034e1c",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI3NTg5OCwiaWF0IjoxNzc5NjcxMDk4LCJqdGkiOiIxOWRiYmY3NTIwNzY0ZmJmYTZmMGY2NTQzNjAzNGUxYyIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.xSL8kn4oQ6sGv9bscCCZOTAvhMMZtfH8413CT6nxBRE",
+        "created_at": "2026-05-25T01:04:58.001Z",
+        "expires_at": "2026-06-01T01:04:58Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 37,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "0e269b30ab0041c69deff017690237c5",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDI3NTk2NCwiaWF0IjoxNzc5NjcxMTY0LCJqdGkiOiIwZTI2OWIzMGFiMDA0MWM2OWRlZmYwMTc2OTAyMzdjNSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.eITpc3GPd5fQ1MlOAE7mEPQtj1cWS_GeEnLLgJO-YRU",
+        "created_at": "2026-05-25T01:06:04.276Z",
+        "expires_at": "2026-06-01T01:06:04Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 38,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "a6d4b7a0e2ec41c69673ed5dd19d1f68",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMyOTcxNiwiaWF0IjoxNzc5NzI0OTE2LCJqdGkiOiJhNmQ0YjdhMGUyZWM0MWM2OTY3M2VkNWRkMTlkMWY2OCIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.T_v_WTU9zMcAqMCLF8Kx-qZu1M60yNl8ahQXiGByszM",
+        "created_at": "2026-05-25T16:01:56.796Z",
+        "expires_at": "2026-06-01T16:01:56Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 39,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "57639645dfe54e53ace1d46778973f72",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMyOTc0NCwiaWF0IjoxNzc5NzI0OTQ0LCJqdGkiOiI1NzYzOTY0NWRmZTU0ZTUzYWNlMWQ0Njc3ODk3M2Y3MiIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.Y3S7B9ver-nGnlBdg0sR7Vm0WUCHu78tf7-MMI_2RmQ",
+        "created_at": "2026-05-25T16:02:24.465Z",
+        "expires_at": "2026-06-01T16:02:24Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 40,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "90428b16686b4a0582e4bf15dee556a9",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzNjgwMSwiaWF0IjoxNzc5NzMyMDAxLCJqdGkiOiI5MDQyOGIxNjY4NmI0YTA1ODJlNGJmMTVkZWU1NTZhOSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.JBm57kzsi0cwnNJOV9QVnHWOtjVOCeRUEUDSS0M7jOs",
+        "created_at": "2026-05-25T18:00:01.933Z",
+        "expires_at": "2026-06-01T18:00:01Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 41,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "65a8378463a34742b61406890e14b7ce",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzNzMzNiwiaWF0IjoxNzc5NzMyNTM2LCJqdGkiOiI2NWE4Mzc4NDYzYTM0NzQyYjYxNDA2ODkwZTE0YjdjZSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.BtX38cS7Bik3CpkylDKQxe8vTS7r3ybHIUZBlZgqofk",
+        "created_at": "2026-05-25T18:08:56.177Z",
+        "expires_at": "2026-06-01T18:08:56Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 42,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "9cdd5ad09712487d8073daede99b67b3",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzNzM2MywiaWF0IjoxNzc5NzMyNTYzLCJqdGkiOiI5Y2RkNWFkMDk3MTI0ODdkODA3M2RhZWRlOTliNjdiMyIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.lRTDJQAXy7zeYZMTCmbQWhwiH7BbbP7QbZjpXvFm0f0",
+        "created_at": "2026-05-25T18:09:23.932Z",
+        "expires_at": "2026-06-01T18:09:23Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 43,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "8cf50f824fef4d7fb04aec34c3e72384",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODAwMSwiaWF0IjoxNzc5NzMzMjAxLCJqdGkiOiI4Y2Y1MGY4MjRmZWY0ZDdmYjA0YWVjMzRjM2U3MjM4NCIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.zkXs588DB8aSnrBjhrRuhniQbtPuMQp1yjhJFDjHBT8",
+        "created_at": "2026-05-25T18:20:01.785Z",
+        "expires_at": "2026-06-01T18:20:01Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 44,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "5a906d24ee33410cbc3560f0c2dcbb3d",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODEwNCwiaWF0IjoxNzc5NzMzMzA0LCJqdGkiOiI1YTkwNmQyNGVlMzM0MTBjYmMzNTYwZjBjMmRjYmIzZCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.rLJjjAI5p5-gHRRl9VlvN6ne7JDxRGZs9-EbEYLxBS8",
+        "created_at": "2026-05-25T18:21:44.773Z",
+        "expires_at": "2026-06-01T18:21:44Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 45,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "6216b739559b436dbe435f606d84963c",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODIzMiwiaWF0IjoxNzc5NzMzNDMyLCJqdGkiOiI2MjE2YjczOTU1OWI0MzZkYmU0MzVmNjA2ZDg0OTYzYyIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ._x1qr12BdxeR1MJRi3_1K-Lzb5c-_rZaHYCFSa9PzEk",
+        "created_at": "2026-05-25T18:23:52.070Z",
+        "expires_at": "2026-06-01T18:23:52Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 46,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "15c5994d8873469eb2cf2bd6eb26e45e",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODcxMCwiaWF0IjoxNzc5NzMzOTEwLCJqdGkiOiIxNWM1OTk0ZDg4NzM0NjllYjJjZjJiZDZlYjI2ZTQ1ZSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.sPf56f22A7WR99zUPPsridReZcps1tKNGz_HDOS-HLU",
+        "created_at": "2026-05-25T18:31:50.455Z",
+        "expires_at": "2026-06-01T18:31:50Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 47,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "81b52a6990d345ceb125ffcbbf5c5d48",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODc1OCwiaWF0IjoxNzc5NzMzOTU4LCJqdGkiOiI4MWI1MmE2OTkwZDM0NWNlYjEyNWZmY2JiZjVjNWQ0OCIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.t5aMrZidqFOwSDhmBK5k7XqzIdAuwwWR8Fo8_Pv9JsI",
+        "created_at": "2026-05-25T18:32:38.263Z",
+        "expires_at": "2026-06-01T18:32:38Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 48,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "e51eec53472942a49241a57f08c36038",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODc4NSwiaWF0IjoxNzc5NzMzOTg1LCJqdGkiOiJlNTFlZWM1MzQ3Mjk0MmE0OTI0MWE1N2YwOGMzNjAzOCIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.K0hsm8t4EF5Ej68xmUs1EbdChAuG1TsKHnPiOYnUb3w",
+        "created_at": "2026-05-25T18:33:05.639Z",
+        "expires_at": "2026-06-01T18:33:05Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 49,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "3b1c7a9c83ec4db4986ffd0c0c371aea",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDMzODgwNiwiaWF0IjoxNzc5NzM0MDA2LCJqdGkiOiIzYjFjN2E5YzgzZWM0ZGI0OTg2ZmZkMGMwYzM3MWFlYSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.UOhOxzvRqERIpP7DD0Rxb84Y_H7nhskwvrwOEd2bs1w",
+        "created_at": "2026-05-25T18:33:26.560Z",
+        "expires_at": "2026-06-01T18:33:26Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 50,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "6a314cafa25a4b6aa6949fa0486a3cd5",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM1MTQ5MiwiaWF0IjoxNzc5NzQ2NjkyLCJqdGkiOiI2YTMxNGNhZmEyNWE0YjZhYTY5NDlmYTA0ODZhM2NkNSIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.0QhNJp5-F7gg2byGK4p5j3PbBuWpMUGoToR2XAZr5uU",
+        "created_at": "2026-05-25T22:04:52.434Z",
+        "expires_at": "2026-06-01T22:04:52Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 51,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "6a0e311b578240ada2a543bfbf2f3efa",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM1MTUxNywiaWF0IjoxNzc5NzQ2NzE3LCJqdGkiOiI2YTBlMzExYjU3ODI0MGFkYTJhNTQzYmZiZjJmM2VmYSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.aWFlL68bWmRnQxx8zoWqR_0d3OE1L3oz2R7D15zgf-w",
+        "created_at": "2026-05-25T22:05:17.352Z",
+        "expires_at": "2026-06-01T22:05:17Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 52,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "354d96dfae3e42aba75e4d3c53080486",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM1MjcwMCwiaWF0IjoxNzc5NzQ3OTAwLCJqdGkiOiIzNTRkOTZkZmFlM2U0MmFiYTc1ZTRkM2M1MzA4MDQ4NiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.AxDEmSwHJEaGp7S5-G12ibhOWsKuislkzII2dQUbOzE",
+        "created_at": "2026-05-25T22:25:00.733Z",
+        "expires_at": "2026-06-01T22:25:00Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 53,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "4b3d4f2a0d694d0987e73f640f2916e2",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM1NDEzOSwiaWF0IjoxNzc5NzQ5MzM5LCJqdGkiOiI0YjNkNGYyYTBkNjk0ZDA5ODdlNzNmNjQwZjI5MTZlMiIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.shckQWVrn8P2jY0a-A1OQhWVg6vL8xNQMu1OiRoVo6M",
+        "created_at": "2026-05-25T22:48:59.264Z",
+        "expires_at": "2026-06-01T22:48:59Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 54,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "232d7afb99cc4b37b8ead0cc3d3ae6d7",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM1NDE2NCwiaWF0IjoxNzc5NzQ5MzY0LCJqdGkiOiIyMzJkN2FmYjk5Y2M0YjM3YjhlYWQwY2MzZDNhZTZkNyIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.VFEGG7BjJveuijfoVyC8SSy33nInsSV_LGKjNwCAyNo",
+        "created_at": "2026-05-25T22:49:24.136Z",
+        "expires_at": "2026-06-01T22:49:24Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 55,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "35d7fd74bc234b39ae3ebbde8fde2d6e",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5NDQwOCwiaWF0IjoxNzc5Nzg5NjA4LCJqdGkiOiIzNWQ3ZmQ3NGJjMjM0YjM5YWUzZWJiZGU4ZmRlMmQ2ZSIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.DXLXDRWzB8p19znV6AMnFmnIrdD4hxR0u635gVfIlxU",
+        "created_at": "2026-05-26T10:00:08.438Z",
+        "expires_at": "2026-06-02T10:00:08Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 56,
+    "fields": {
+        "user": [
+            "editor@gsa.com"
+        ],
+        "jti": "d4177ab1bc954a93a32b0d207520316b",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5ODA0OSwiaWF0IjoxNzc5NzkzMjQ5LCJqdGkiOiJkNDE3N2FiMWJjOTU0YTkzYTMyYjBkMjA3NTIwMzE2YiIsInVzZXJfaWQiOiIxNDk3ZTZkNC05OGZiLTRjNGQtYTA0Yi03ODE4ZjA5ZWEyMjYifQ.YPWCEFDun2Z4zCjO0F3zvaYtWl7RDb9dVdVcX6pu2Ug",
+        "created_at": "2026-05-26T11:00:49.445Z",
+        "expires_at": "2026-06-02T11:00:49Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 57,
+    "fields": {
+        "user": [
+            "editor@gsa.com"
+        ],
+        "jti": "e712354e78914e20a901b4ed8cf8a6a5",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5ODI1NSwiaWF0IjoxNzc5NzkzNDU1LCJqdGkiOiJlNzEyMzU0ZTc4OTE0ZTIwYTkwMWI0ZWQ4Y2Y4YTZhNSIsInVzZXJfaWQiOiIxNDk3ZTZkNC05OGZiLTRjNGQtYTA0Yi03ODE4ZjA5ZWEyMjYifQ.lihkE0gnQggzNiyXvtr9XIum_xGi6ZFsR74lPDBb0Ew",
+        "created_at": "2026-05-26T11:04:15.333Z",
+        "expires_at": "2026-06-02T11:04:15Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 58,
+    "fields": {
+        "user": [
+            "editor@gsa.com"
+        ],
+        "jti": "19b35e5870ef46909edb489d976a0363",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDM5ODU4MCwiaWF0IjoxNzc5NzkzNzgwLCJqdGkiOiIxOWIzNWU1ODcwZWY0NjkwOWVkYjQ4OWQ5NzZhMDM2MyIsInVzZXJfaWQiOiIxNDk3ZTZkNC05OGZiLTRjNGQtYTA0Yi03ODE4ZjA5ZWEyMjYifQ.itaPbCUbi6VsfTPBx-JtiydYuUIq-J7IJAN_w66WBnU",
+        "created_at": "2026-05-26T11:09:40.645Z",
+        "expires_at": "2026-06-02T11:09:40Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 59,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "4820d5c900da482c9f43a4913269d668",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQzNzYzNSwiaWF0IjoxNzc5ODMyODM1LCJqdGkiOiI0ODIwZDVjOTAwZGE0ODJjOWY0M2E0OTEzMjY5ZDY2OCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.FqqokT9jDFDauxCYXoVvefvszuna-BmwWuy1kydU2-w",
+        "created_at": "2026-05-26T22:00:35.696Z",
+        "expires_at": "2026-06-02T22:00:35Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 60,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "c3e4e7c54a6e4be0a7df33a416bdbe82",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ1MjgxOCwiaWF0IjoxNzc5ODQ4MDE4LCJqdGkiOiJjM2U0ZTdjNTRhNmU0YmUwYTdkZjMzYTQxNmJkYmU4MiIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ.1p1BCV3vDLBM_T3Jh1l9ftvVQVRbK5QbMRg9ayfPeAM",
+        "created_at": "2026-05-27T02:13:38.567Z",
+        "expires_at": "2026-06-03T02:13:38Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 61,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "f5ba31cb072b463fb5b0453fb012287b",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ1MzI5MSwiaWF0IjoxNzc5ODQ4NDkxLCJqdGkiOiJmNWJhMzFjYjA3MmI0NjNmYjViMDQ1M2ZiMDEyMjg3YiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ._Vl4udeaZWt_RW-DANv7hjpZgzv7xSYgwVzeGKP8QL8",
+        "created_at": "2026-05-27T02:21:31.489Z",
+        "expires_at": "2026-06-03T02:21:31Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 62,
+    "fields": {
+        "user": [
+            "teacher@gsa.com"
+        ],
+        "jti": "03d88287c3b644a79c7f5aa5341757ab",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ1NjEzMCwiaWF0IjoxNzc5ODUxMzMwLCJqdGkiOiIwM2Q4ODI4N2MzYjY0NGE3OWM3ZjVhYTUzNDE3NTdhYiIsInVzZXJfaWQiOiJmNzU5ZDBmYy1hYjgyLTQ1MmUtYWM2YS0yYjdiMDE2MWY5ZWUifQ._i3PuaehcqlecchIEB_g1cXytJfaPbOMHPqisfjgmGk",
+        "created_at": "2026-05-27T03:08:50.490Z",
+        "expires_at": "2026-06-03T03:08:50Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 63,
+    "fields": {
+        "user": [
+            "parent@gsa.com"
+        ],
+        "jti": "de06eba825e0444a8c6ae65eac8172a9",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ1NjUyMywiaWF0IjoxNzc5ODUxNzIzLCJqdGkiOiJkZTA2ZWJhODI1ZTA0NDRhOGM2YWU2NWVhYzgxNzJhOSIsInVzZXJfaWQiOiJmOTE0YjA4ZS05MDRlLTQxMjAtYjI2ZS1hYTkwMDFjNGEwZjAifQ.NjzgNR6NPlZhcYY_V3JDksqiK2BlzBTqywWkWlr2kCs",
+        "created_at": "2026-05-27T03:15:23.064Z",
+        "expires_at": "2026-06-03T03:15:23Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 64,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "2c11e5f079ec4f069e31c1936c1b4053",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ1NzQ2NSwiaWF0IjoxNzc5ODUyNjY1LCJqdGkiOiIyYzExZTVmMDc5ZWM0ZjA2OWUzMWMxOTM2YzFiNDA1MyIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.pClQ4P6T_8omE3URz1xrEy0BT1oThVTfFYIRaw1FaZw",
+        "created_at": "2026-05-27T03:31:05.739Z",
+        "expires_at": "2026-06-03T03:31:05Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 65,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "588ebe7c899d44d6a6539db3e7e6cf16",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ1OTYzNSwiaWF0IjoxNzc5ODU0ODM1LCJqdGkiOiI1ODhlYmU3Yzg5OWQ0NGQ2YTY1MzlkYjNlN2U2Y2YxNiIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.gIV2ixa9vfmtjZ5ieFZKjyrUY6Bf1dWIlfxMvhWrT2M",
+        "created_at": "2026-05-27T04:07:15.590Z",
+        "expires_at": "2026-06-03T04:07:15Z"
+    }
+},
+{
+    "model": "token_blacklist.outstandingtoken",
+    "pk": 66,
+    "fields": {
+        "user": [
+            "igho@gmail.com"
+        ],
+        "jti": "6c29eb09525347c8961f4fa84e003d58",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc4MDQ5MDE5NCwiaWF0IjoxNzc5ODg1Mzk0LCJqdGkiOiI2YzI5ZWIwOTUyNTM0N2M4OTYxZjRmYTg0ZTAwM2Q1OCIsInVzZXJfaWQiOiJjNTU2MzhmNC0xZDEwLTQ2ODUtOGM0ZS00NmQ5ZTg3MzFlNjgifQ.Y77J6DfJ1F6Ro-45S2IhKmUS6KKgYHHWfwXBFfmwPTs",
+        "created_at": "2026-05-27T12:36:34.530Z",
+        "expires_at": "2026-06-03T12:36:34Z"
+    }
+}
+]
