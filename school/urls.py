@@ -7,6 +7,7 @@ from .views import (
     UserViewSet, ClassRoomViewSet, TermViewSet, StudentViewSet,
     AttendanceViewSet, InvoiceViewSet, PaymentViewSet, CreditNoteViewSet,
     AnnouncementViewSet, AssignmentViewSet, DevelopmentReportViewSet,
+    HealthCheckView,
 )
 
 router = DefaultRouter()
@@ -23,12 +24,16 @@ router.register("assignments",   AssignmentViewSet,       basename="assignments"
 router.register("reports",       DevelopmentReportViewSet, basename="reports")
 
 urlpatterns = [
+
+    path("",         HealthCheckView.as_view(),  name="health"),
+    
     # Auth
     path("login/",          LoginView.as_view(),        name="login"),
     path("register/",       RegisterView.as_view(),     name="register"),
     path("logout/",         LogoutView.as_view(),       name="logout"),
     path("token/refresh/",  TokenRefreshView.as_view(), name="token-refresh"),
     path("me/",             MeView.as_view(),           name="me"),
+    
     # Everything else via router
     path("",                include(router.urls)),
 ]

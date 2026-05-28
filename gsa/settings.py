@@ -79,6 +79,16 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "school.pagination.StandardPagination",
     "PAGE_SIZE": 10,
+    
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '30/minute',     # Unauthenticated users
+        'user': '120/minute',    # Authenticated users
+        'auth': '5/minute',      # Strict limit for login/register
+    }
 }
 
 SIMPLE_JWT = {

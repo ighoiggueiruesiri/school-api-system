@@ -12,6 +12,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiTypes, inline_serializer
 from rest_framework import serializers as drf_serializers
+from rest_framework.throttling import ScopedRateThrottle
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
+from django.db import connection
+from django.db.utils import OperationalError
 
 from .models import (
     User, ClassRoom, Term, Student, Attendance,
@@ -25,6 +31,7 @@ from .serializers import (
     AnnouncementSerializer, AssignmentSerializer, DevelopmentReportSerializer
 )
 
+CACHE_TTL = 60 * 15
 
 # ── PAGINATION ────────────────────────────────────────────────────────────────
 
@@ -75,12 +82,15 @@ class LoginView(TokenObtainPairView):
     """POST /api/login/ — returns access + refresh JWT tokens."""
     serializer_class   = LoginSerializer
     permission_classes = [AllowAny]
-
+    throttle_classes   = [ScopedRateThrottle]
+    throttle_scope     = 'auth'
 
 @extend_schema(tags=["Authentication"])
 class RegisterView(APIView):
     """POST /api/register/ — parent self-registration, no login needed."""
     permission_classes = [AllowAny]
+    throttle_classes   = [ScopedRateThrottle]
+    throttle_scope     = 'auth'
 
     @extend_schema(
         summary="Parent Self-Registration",
@@ -217,6 +227,10 @@ class UserViewSet(viewsets.ModelViewSet):
 # ── CLASSROOMS ────────────────────────────────────────────────────────────────
 
 @extend_schema(tags=["Classrooms Management"])
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(vary_on_headers("Authorization"), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
+@method_decorator(vary_on_headers("Authorization"), name='retrieve')
 @extend_schema_view(
     list=extend_schema(
         summary="List all classrooms",
@@ -269,6 +283,10 @@ class ClassRoomViewSet(viewsets.ModelViewSet):
 # ── TERMS ─────────────────────────────────────────────────────────────────────
 
 @extend_schema(tags=["Academic Calendar Terms"])
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(vary_on_headers("Authorization"), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
+@method_decorator(vary_on_headers("Authorization"), name='retrieve')
 @extend_schema_view(
     list=extend_schema(
         summary="List all academic terms",
@@ -723,6 +741,10 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
 # ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
 
 @extend_schema(tags=["Announcements"])
+@method_decorator(cache_page(CACHE_TTL), name='list')
+@method_decorator(vary_on_headers("Authorization"), name='list')
+@method_decorator(cache_page(CACHE_TTL), name='retrieve')
+@method_decorator(vary_on_headers("Authorization"), name='retrieve')
 @extend_schema_view(
     list=extend_schema(
         summary="List announcements",
@@ -899,3 +921,48 @@ class DevelopmentReportViewSet(viewsets.ModelViewSet):
         report.is_published = True
         report.save(update_fields=["is_published"])
         return Response({"message": f"Report for {report.student.full_name} is now visible to parents."})
+
+
+# ── SYSTEM ────────────────────────────────────────────────────────────────────
+@extend_schema(tags=["System"])
+class HealthCheckView(APIView):
+    """GET /api — Checks API availability and Database connection."""
+    permission_classes = [AllowAny]
+    
+    @extend_schema(
+        summary="System Health Check",
+        responses={
+            200: inline_serializer(
+                name="HealthCheckSuccess",
+                fields={
+                    "status": drf_serializers.CharField(default="healthy"),
+                    "database": drf_serializers.CharField(default="connected"),
+                    "timestamp": drf_serializers.DateTimeField()
+                }
+            ),
+            503: inline_serializer(
+                name="HealthCheckFail",
+                fields={
+                    "status": drf_serializers.CharField(default="unhealthy"),
+                    "database": drf_serializers.CharField(default="disconnected"),
+                    "error": drf_serializers.CharField()
+                }
+            )
+        }
+    )
+    def get(self, request):
+        try:
+            # Explicitly force a database call to verify Postgres is alive
+            connection.ensure_connection()
+            return Response({
+                "status": "healthy",
+                "database": "connected",
+                "timestamp": timezone.now()
+            }, status=status.HTTP_200_OK)
+            
+        except OperationalError as e:
+            return Response({
+                "status": "unhealthy",
+                "database": "disconnected",
+                "error": str(e)
+            }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
