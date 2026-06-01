@@ -4,7 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
-from .models import ClassRoom, Term, Student, Attendance, Invoice, Payment, CreditNote, Announcement, Assignment, DevelopmentReport
+from .models import ClassRoom, Term, Student, Attendance, Invoice, Payment, CreditNote, Announcement, Assignment, DevelopmentReport, AuditLog
 
 User = get_user_model()
 
@@ -227,3 +227,51 @@ class DevelopmentReportSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_written_by_name(self, obj): return obj.written_by.full_name if obj.written_by else None
+
+
+# ── Audit Log ─────────────────────────────────────────────────────────────────
+ 
+class AuditLogSerializer(serializers.ModelSerializer):
+    """
+    Read-only serialiser for AuditLog.
+ 
+    Exposed only to admins via GET /api/audit-logs/.
+    Supports filtering by user_email, method, response_status,
+    resource_type, action, and date range (from / to query params
+    handled in the viewset).
+    """
+    # Human-readable label for the action code
+    action_display = serializers.SerializerMethodField()
+ 
+    class Meta:
+        model  = AuditLog
+        fields = [
+            "id",
+            "timestamp",
+            # actor
+            "user",
+            "user_email",
+            "user_role",
+            "ip_address",
+            "user_agent",
+            # request
+            "method",
+            "path",
+            "query_params",
+            "request_body",
+            # response
+            "response_status",
+            "response_time_ms",
+            "error_detail",       # ← what actually went wrong (empty on success)
+            # classification
+            "resource_type",
+            "resource_id",
+            "action",
+            "action_display",
+        ]
+        # The entire table is immutable from the API — no writes allowed
+        read_only_fields = fields
+ 
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_action_display(self, obj):
+        return obj.get_action_display()

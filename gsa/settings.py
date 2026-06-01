@@ -40,6 +40,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "school.middleware.AuditLogMiddleware",
 ]
 
 ROOT_URLCONF = "gsa.urls"
@@ -67,6 +68,44 @@ DATABASES = {
         conn_max_age=600,
     )
 }
+
+# ── Cache ─────────────────────────────────────────────────────────────────────
+# Production: set REDIS_URL in .env  →  redis://127.0.0.1:6379/1
+# Development fallback: LocMemCache (single-process only; rate-throttling and
+#   cache_page decorators still work but won't be shared across workers).
+#
+# Install:  pip install django-redis
+#
+_REDIS_URL = config("REDIS_URL", default="")
+
+if _REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND":  "django_redis.cache.RedisCache",
+            "LOCATION": _REDIS_URL,
+            "OPTIONS": {
+                "CLIENT_CLASS":         "django_redis.client.DefaultClient",
+                # Silently degrade if Redis goes down instead of raising
+                "IGNORE_EXCEPTIONS":    True,
+                # Connection pool — enough headroom for gunicorn workers
+                "CONNECTION_POOL_KWARGS": {"max_connections": 50},
+            },
+            "KEY_PREFIX": "gsa",
+            # Keep cached items for 15 minutes by default (matches CACHE_TTL)
+            "TIMEOUT": 60 * 15,
+        }
+    }
+    # Use Redis for session storage too when Redis is available
+    SESSION_ENGINE     = "django.contrib.sessions.backends.cache"
+    SESSION_CACHE_ALIAS = "default"
+else:
+    # Local dev / CI — no Redis required
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "gsa-locmem",
+        }
+    }
 
 # ── Auth / JWT ────────────────────────────────────────────────────────────────
 REST_FRAMEWORK = {

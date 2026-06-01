@@ -463,3 +463,103 @@ class DevelopmentReport(models.Model):
 
     def __str__(self):
         return f"Report: {self.student.full_name} — {self.term}"
+
+
+# ─────────────────────────────────────────────
+#  AUDIT LOG
+# ─────────────────────────────────────────────
+ 
+class AuditLog(models.Model):
+    """
+    Immutable record of every API action — who did what, when, and with what result.
+ 
+    Written by AuditLogMiddleware after every response. Never updated or deleted
+    through the application; treated as append-only. Admins can query via
+    GET /api/audit-logs/.
+ 
+    Fields
+    ------
+    user          → the authenticated user (NULL for anonymous / unauthenticated)
+    user_email    → denormalised so logs survive user deletion
+    user_role     → denormalised role at the time of the request
+    ip_address    → real client IP (respects X-Forwarded-For from a trusted proxy)
+    user_agent    → browser / app string, truncated to 500 chars
+    method        → HTTP verb (GET POST PATCH DELETE …)
+    path          → request path, e.g. /api/students/
+    query_params  → ?key=value dict (JSON)
+    request_body  → sanitised payload — passwords/tokens replaced with "***"
+    response_status → HTTP status code returned
+    response_time_ms → round-trip time in milliseconds
+    resource_type → first URL segment after /api/, e.g. "students", "invoices"
+    resource_id   → second URL segment when present, e.g. the UUID of a student
+    action        → derived verb: login.success | login.failed | logout | register
+                    | create | read | update | delete | bulk | action | health_check
+    timestamp     → auto_now_add — immutable once written
+    """
+ 
+    ACTION_CHOICES = [
+        ("login.success", "Login Success"),
+        ("login.failed",  "Login Failed"),
+        ("logout",        "Logout"),
+        ("register",      "Register"),
+        ("create",        "Create"),
+        ("read",          "Read"),
+        ("update",        "Update"),
+        ("delete",        "Delete"),
+        ("bulk",          "Bulk Operation"),
+        ("action",        "Custom Action"),
+        ("health_check",  "Health Check"),
+        ("error",         "Server Error"),
+    ]
+ 
+    id               = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    # ── Actor ─────────────────────────────────────────────────────────────────
+    user             = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="audit_logs",
+        help_text="NULL for anonymous / unauthenticated requests.",
+    )
+    user_email       = models.EmailField(blank=True, help_text="Denormalised — survives user deletion.")
+    user_role        = models.CharField(max_length=10, blank=True, help_text="Role at request time.")
+    ip_address       = models.GenericIPAddressField(null=True, blank=True)
+    user_agent       = models.TextField(blank=True)
+    # ── Request ───────────────────────────────────────────────────────────────
+    method           = models.CharField(max_length=10)
+    path             = models.CharField(max_length=500)
+    query_params     = models.JSONField(default=dict, blank=True)
+    request_body     = models.JSONField(default=dict, blank=True, help_text="Sanitised — no passwords/tokens.")
+    # ── Response ──────────────────────────────────────────────────────────────
+    response_status  = models.PositiveSmallIntegerField()
+    response_time_ms = models.PositiveIntegerField(default=0)
+    # ── Classification ────────────────────────────────────────────────────────
+    resource_type    = models.CharField(max_length=50, blank=True, help_text="e.g. students, invoices")
+    resource_id      = models.CharField(max_length=100, blank=True)
+    action           = models.CharField(max_length=20, choices=ACTION_CHOICES, default="read")
+    # ── Meta ──────────────────────────────────────────────────────────────────
+    error_detail     = models.TextField(
+        blank=True,
+        help_text=(
+            "Human-readable description of what went wrong, populated for every "
+            "4xx / 5xx response. Empty for successful requests. "
+            "Examples: 'email: This field is required.' | "
+            "'Only admins can delete students.' | "
+            "'Given token not valid for any token type'"
+        ),
+    )
+    timestamp        = models.DateTimeField(auto_now_add=True, db_index=True)
+ 
+    class Meta:
+        db_table = "audit_logs"
+        ordering = ["-timestamp"]
+        indexes  = [
+            # fast look-ups the admin dashboard will need most
+            models.Index(fields=["user",            "-timestamp"], name="audit_user_ts_idx"),
+            models.Index(fields=["resource_type",   "-timestamp"], name="audit_resource_ts_idx"),
+            models.Index(fields=["response_status", "-timestamp"], name="audit_status_ts_idx"),
+            models.Index(fields=["action",          "-timestamp"], name="audit_action_ts_idx"),
+            models.Index(fields=["ip_address",      "-timestamp"], name="audit_ip_ts_idx"),
+        ]
+ 
+    def __str__(self):
+        actor = self.user_email or "anon"
+        return f"[{self.timestamp:%Y-%m-%d %H:%M:%S}] {actor} {self.method} {self.path} → {self.response_status}"
