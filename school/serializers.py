@@ -4,7 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
-from .models import ClassRoom, Term, Student, Attendance, Invoice, Payment, CreditNote, Announcement, Assignment, DevelopmentReport, AuditLog
+from .models import ClassRoom, Term, Student, Attendance, Invoice, Payment, CreditNote, Announcement, Assignment, DevelopmentReport, AuditLog, Inquiry
 
 User = get_user_model()
 
@@ -228,6 +228,11 @@ class DevelopmentReportSerializer(serializers.ModelSerializer):
     @extend_schema_field(OpenApiTypes.STR)
     def get_written_by_name(self, obj): return obj.written_by.full_name if obj.written_by else None
 
+class InquirySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inquiry
+        fields = ['id', 'parent_name', 'email', 'phone', 'interested_class', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
 # ── Audit Log ─────────────────────────────────────────────────────────────────
  

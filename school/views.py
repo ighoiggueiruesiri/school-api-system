@@ -21,7 +21,8 @@ from django.db.utils import OperationalError
 
 from .models import (
     User, ClassRoom, Term, Student, Attendance,
-    Invoice, Payment, Announcement, Assignment, DevelopmentReport, CreditNote, AuditLog
+    Invoice, Payment, Announcement, Assignment, DevelopmentReport, CreditNote, AuditLog,
+    Inquiry
 )
 from .serializers import (
     LoginSerializer, RegisterSerializer, UserSerializer,
@@ -29,6 +30,7 @@ from .serializers import (
     AttendanceSerializer, BulkAttendanceSerializer,
     InvoiceSerializer, PaymentSerializer, CreditNoteSerializer,
     AnnouncementSerializer, AssignmentSerializer, DevelopmentReportSerializer, AuditLogSerializer,
+    InquirySerializer,
 )
 
 CACHE_TTL = 60 * 15
@@ -1144,3 +1146,36 @@ class HealthCheckView(APIView):
             {"status": overall, "checks": checks, "timestamp": timezone.now()},
             status=http_status,
         )
+
+# ── LEAD CAPTURE ────────────────────────────────────────────────────────────────────
+@extend_schema(tags=["Lead Capture"])
+@extend_schema_view(
+    create=extend_schema(
+        summary="Submit a public lead/inquiry",
+        description="Public endpoint for the website popup. No authentication required.",
+        auth=[], # This explicitly removes the auth padlock in Swagger
+    ),
+    list=extend_schema(summary="List all inquiries (Staff only)"),
+    retrieve=extend_schema(summary="Get specific inquiry details (Staff only)"),
+    update=extend_schema(summary="Update an inquiry (Staff only)"),
+    partial_update=extend_schema(summary="Partially update an inquiry (Staff only)"),
+    destroy=extend_schema(summary="Delete an inquiry (Staff only)"),
+)
+class InquiryViewSet(viewsets.ModelViewSet):
+    """
+    /api/inquiries/
+    POST is open to the public for the website pop-up.
+    GET, PATCH, DELETE are restricted to authenticated users.
+    """
+    queryset = Inquiry.objects.all().order_by('-created_at')
+    serializer_class = InquirySerializer
+    pagination_class = DynamicPageSizePagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["parent_name", "email", "phone"]
+
+    def get_permissions(self):
+        # Open the POST endpoint to the public
+        if self.action == 'create':
+            return [AllowAny()]
+        # Lock everything else down
+        return [IsAuthenticated()]
