@@ -4,7 +4,11 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
-from .models import ClassRoom, Term, Student, Attendance, Invoice, Payment, CreditNote, Announcement, Assignment, DevelopmentReport, AuditLog, Inquiry
+from .models import (
+    ClassRoom, Term, Student, Attendance,
+    Invoice, InvoiceLineItem, Payment, CreditNote, Expenditure,
+    Announcement, Assignment, DevelopmentReport, AuditLog, Inquiry
+)
 
 User = get_user_model()
 
@@ -85,7 +89,6 @@ class TermSerializer(serializers.ModelSerializer):
 # ── Students ──────────────────────────────────────────────────────────────────
 
 class StudentSerializer(serializers.ModelSerializer):
-    #full_name         = serializers.ReadOnlyField()
     full_name          = serializers.CharField(read_only=True)
     current_class_name = serializers.SerializerMethodField()
     age               = serializers.SerializerMethodField()
@@ -110,16 +113,14 @@ class StudentSerializer(serializers.ModelSerializer):
 # ── Attendance ────────────────────────────────────────────────────────────────
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    
-    student_name = serializers.SerializerMethodField()
+    student_name     = serializers.SerializerMethodField()
     recorded_by_name = serializers.SerializerMethodField()
 
     class Meta:
         model  = Attendance
-        #fields = "__all__"
         fields = [
-            "id", "date", "status", "reason", "created_at", 
-            "student", "student_name", "term", 
+            "id", "date", "status", "reason", "outlook", "created_at",
+            "student", "student_name", "term",
             "recorded_by", "recorded_by_name"
         ]
         read_only_fields = ["recorded_by","created_at"]
@@ -138,59 +139,215 @@ class BulkAttendanceSerializer(serializers.Serializer):
     date    = serializers.DateField()
     term    = serializers.PrimaryKeyRelatedField(queryset=Term.objects.all())
     records = serializers.ListField(
-        child=serializers.DictField(), 
+        child=serializers.DictField(),
         min_length=1,
-        help_text="List of objects containing student_id, status ('present', 'absent', 'late'), and optional reason."
+        help_text="List of {student_id, status, reason?} objects."
     )
 
 
 # ── Finance ───────────────────────────────────────────────────────────────────
 
+class InvoiceLineItemSerializer(serializers.ModelSerializer):
+    """
+    A single fee row on an invoice.
+    `charged_amount` is read-only and equals discounted_amount ?? amount.
+    """
+    charged_amount = serializers.FloatField(read_only=True)
+
+    class Meta:
+        model  = InvoiceLineItem
+        fields = [
+            "id",
+            "description",
+            "amount",
+            "discounted_amount",
+            "charged_amount",
+            "sort_order",
+        ]
+        read_only_fields = ["id", "charged_amount"]
+
+
 class PaymentSerializer(serializers.ModelSerializer):
+    """
+    A single instalment or full payment against an invoice.
+    `paid_by_name` and `invoice_number` are read-only convenience fields
+    for displaying receipt information without extra API calls.
+    """
+    paid_by_name    = serializers.SerializerMethodField()
+    invoice_number  = serializers.SerializerMethodField()
+    student_name    = serializers.SerializerMethodField()
+    class_name      = serializers.SerializerMethodField()
+    term_name       = serializers.SerializerMethodField()
+
     class Meta:
         model  = Payment
-        fields = "__all__"
-        read_only_fields = ["id","created_at"]
+        fields = [
+            "id",
+            "invoice",
+            "invoice_number",
+            "student_name",
+            "class_name",
+            "term_name",
+            "amount",
+            "method",
+            "reference",
+            "receipt_number",
+            "paid_date",
+            "paid_by",
+            "paid_by_name",
+            "notes",
+            "created_at",
+        ]
+        read_only_fields = ["id", "paid_by", "created_at"]
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_paid_by_name(self, obj):
+        return obj.paid_by.full_name if obj.paid_by else None
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_invoice_number(self, obj):
+        return obj.invoice.invoice_number
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_student_name(self, obj):
+        return obj.invoice.student.full_name
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_class_name(self, obj):
+        cls = obj.invoice.student.current_class
+        return cls.name if cls else None
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_term_name(self, obj):
+        return str(obj.invoice.term)
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
-    #balance      = serializers.ReadOnlyField()
+    """
+    Full invoice representation including nested line items and payments.
+    `line_items` are accepted on create/update (writable nested).
+    """
     balance      = serializers.FloatField(read_only=True)
     student_name = serializers.SerializerMethodField()
+    class_name   = serializers.SerializerMethodField()
     term_name    = serializers.SerializerMethodField()
     payments     = PaymentSerializer(many=True, read_only=True)
+    line_items   = InvoiceLineItemSerializer(many=True, required=False)
 
     class Meta:
         model  = Invoice
-        fields = "__all__"
-        read_only_fields = ["id","invoice_number","amount_paid","status","created_at"]
+        fields = [
+            "id",
+            "invoice_number",
+            "student",
+            "student_name",
+            "class_name",
+            "term",
+            "term_name",
+            "description",
+            "notes",
+            "amount",
+            "amount_paid",
+            "balance",
+            "status",
+            "due_date",
+            "line_items",
+            "payments",
+            "created_at",
+        ]
+        read_only_fields = ["id", "invoice_number", "amount_paid", "status", "created_at"]
 
     @extend_schema_field(OpenApiTypes.STR)
-    def get_student_name(self, obj): return obj.student.full_name
+    def get_student_name(self, obj):
+        return obj.student.full_name
 
     @extend_schema_field(OpenApiTypes.STR)
-    def get_term_name(self, obj):    return str(obj.term)
+    def get_class_name(self, obj):
+        cls = obj.student.current_class
+        return cls.name if cls else None
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_term_name(self, obj):
+        return str(obj.term)
+
+    def create(self, validated_data):
+        line_items_data = validated_data.pop("line_items", [])
+        invoice = Invoice.objects.create(**validated_data)
+        for idx, item in enumerate(line_items_data):
+            item.setdefault("sort_order", idx)
+            InvoiceLineItem.objects.create(invoice=invoice, **item)
+        return invoice
+
+    def update(self, instance, validated_data):
+        line_items_data = validated_data.pop("line_items", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if line_items_data is not None:
+            # Replace all line items on update
+            instance.line_items.all().delete()
+            for idx, item in enumerate(line_items_data):
+                item.setdefault("sort_order", idx)
+                InvoiceLineItem.objects.create(invoice=instance, **item)
+        return instance
+
 
 class CreditNoteSerializer(serializers.ModelSerializer):
-    student_name = serializers.CharField(source="student.full_name", read_only=True)
+    student_name   = serializers.CharField(source="student.full_name", read_only=True)
     logged_by_name = serializers.CharField(source="logged_by.full_name", read_only=True)
 
     class Meta:
         model = CreditNote
         fields = [
-            "id", 
-            "student", 
-            "student_name", 
-            "amount", 
-            "reference", 
-            "notes", 
-            "is_used", 
-            "logged_by", 
-            "logged_by_name", 
-            "created_at"
+            "id",
+            "student",
+            "student_name",
+            "amount",
+            "reference",
+            "notes",
+            "is_used",
+            "logged_by",
+            "logged_by_name",
+            "created_at",
         ]
         read_only_fields = ["id", "logged_by", "created_at"]
-        
+
+
+class ExpenditureSerializer(serializers.ModelSerializer):
+    """
+    School outgoing — salary, utilities, supplies, etc.
+    `recorded_by_name` is read-only for display.
+    `category_display` is the human-readable category label.
+    """
+    recorded_by_name = serializers.SerializerMethodField()
+    category_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Expenditure
+        fields = [
+            "id",
+            "date",
+            "category",
+            "category_display",
+            "description",
+            "amount",
+            "reference",
+            "notes",
+            "recorded_by",
+            "recorded_by_name",
+            "created_at",
+        ]
+        read_only_fields = ["id", "recorded_by", "created_at"]
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_recorded_by_name(self, obj):
+        return obj.recorded_by.full_name if obj.recorded_by else None
+
+    @extend_schema_field(OpenApiTypes.STR)
+    def get_category_display(self, obj):
+        return obj.get_category_display()
+
+
 # ── Other ─────────────────────────────────────────────────────────────────────
 
 class AnnouncementSerializer(serializers.ModelSerializer):
@@ -214,7 +371,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
 
 class DevelopmentReportSerializer(serializers.ModelSerializer):
-    student_name   = serializers.SerializerMethodField()
+    student_name    = serializers.SerializerMethodField()
     written_by_name = serializers.SerializerMethodField()
 
     class Meta:
@@ -228,55 +385,34 @@ class DevelopmentReportSerializer(serializers.ModelSerializer):
     @extend_schema_field(OpenApiTypes.STR)
     def get_written_by_name(self, obj): return obj.written_by.full_name if obj.written_by else None
 
+
 class InquirySerializer(serializers.ModelSerializer):
     class Meta:
         model = Inquiry
         fields = ['id', 'parent_name', 'email', 'phone', 'interested_class', 'created_at']
         read_only_fields = ['id', 'created_at']
 
+
 # ── Audit Log ─────────────────────────────────────────────────────────────────
- 
+
 class AuditLogSerializer(serializers.ModelSerializer):
     """
     Read-only serialiser for AuditLog.
- 
     Exposed only to admins via GET /api/audit-logs/.
-    Supports filtering by user_email, method, response_status,
-    resource_type, action, and date range (from / to query params
-    handled in the viewset).
     """
-    # Human-readable label for the action code
     action_display = serializers.SerializerMethodField()
- 
+
     class Meta:
         model  = AuditLog
         fields = [
-            "id",
-            "timestamp",
-            # actor
-            "user",
-            "user_email",
-            "user_role",
-            "ip_address",
-            "user_agent",
-            # request
-            "method",
-            "path",
-            "query_params",
-            "request_body",
-            # response
-            "response_status",
-            "response_time_ms",
-            "error_detail",       # ← what actually went wrong (empty on success)
-            # classification
-            "resource_type",
-            "resource_id",
-            "action",
-            "action_display",
+            "id", "timestamp",
+            "user", "user_email", "user_role", "ip_address", "user_agent",
+            "method", "path", "query_params", "request_body",
+            "response_status", "response_time_ms", "error_detail",
+            "resource_type", "resource_id", "action", "action_display",
         ]
-        # The entire table is immutable from the API — no writes allowed
         read_only_fields = fields
- 
+
     @extend_schema_field(OpenApiTypes.STR)
     def get_action_display(self, obj):
         return obj.get_action_display()

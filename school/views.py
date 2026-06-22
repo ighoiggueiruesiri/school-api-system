@@ -13,16 +13,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiTypes, inline_serializer
 from rest_framework import serializers as drf_serializers
 from rest_framework.throttling import ScopedRateThrottle
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
+from django.core.cache import cache
 from django.db import connection
 from django.db.utils import OperationalError
+from .cache_utils import bump_cache_version, make_cache_key, CACHE_TTL
 
 from .models import (
     User, ClassRoom, Term, Student, Attendance,
     Invoice, Payment, Announcement, Assignment, DevelopmentReport, CreditNote, AuditLog,
-    Inquiry
+    Inquiry, Expenditure,  
 )
 from .serializers import (
     LoginSerializer, RegisterSerializer, UserSerializer,
@@ -30,10 +29,8 @@ from .serializers import (
     AttendanceSerializer, BulkAttendanceSerializer,
     InvoiceSerializer, PaymentSerializer, CreditNoteSerializer,
     AnnouncementSerializer, AssignmentSerializer, DevelopmentReportSerializer, AuditLogSerializer,
-    InquirySerializer,
+    InquirySerializer, ExpenditureSerializer,
 )
-
-CACHE_TTL = 60 * 15
 
 # ── PAGINATION ────────────────────────────────────────────────────────────────
 
@@ -55,6 +52,107 @@ class DynamicPageSizePagination(PageNumberPagination):
             "previous": self.get_previous_link(),
             "results":  data,
         })
+
+
+# ── CACHE VERSIONING MIXIN ────────────────────────────────────────────────────
+#
+# Drop-in mixin for ModelViewSet.  Replaces @cache_page with a version-counter
+# strategy so that any write (create / update / destroy) immediately invalidates
+# the cached reads for that resource — without needing signals or complex key
+# deletion logic.
+#
+# How to use
+# ──────────
+#   class MyViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
+#       cache_resource = "my_resource"          # unique string for this resource
+#
+#       # Optional: override _cache_discriminator to scope by user identity.
+#       # Default scopes by role (parent vs non-parent), which is sufficient
+#       # for most endpoints.  For teacher-scoped data, return the user's id.
+#
+# Read path  → list() / retrieve() check the versioned key; serve from cache
+#              on hit, populate it on miss.
+# Write path → create() / update() / partial_update() / destroy() delegate to
+#              super() first; if the response is a success, bump the version.
+#              This makes every existing cached key for the resource stale
+#              in O(1) without touching each individual entry.
+
+class VersionedCacheMixin:
+    """Versioned read-cache + automatic invalidation on writes."""
+
+    cache_resource: str = ""   # subclass must set this
+
+    # ── Key helpers ───────────────────────────────────────────────────────────
+
+    def _cache_discriminator(self, request) -> str:
+        """
+        Return a string that distinguishes what a user is allowed to see.
+
+        Default: user role — parent-role users have filtered querysets on some
+        endpoints (announcements filtered by audience, classrooms filtered by
+        teacher assignment…) so their cache must not bleed into staff cache.
+
+        Subclasses override this to add finer granularity (e.g. teacher user id).
+        """
+        return f"role:{request.user.role}"
+
+    def _list_cache_key(self, request) -> str:
+        params = request.META.get("QUERY_STRING", "")
+        suffix = f"{self._cache_discriminator(request)}:list:{params}"
+        return make_cache_key(self.cache_resource, suffix)
+
+    def _retrieve_cache_key(self, request, pk) -> str:
+        suffix = f"{self._cache_discriminator(request)}:retrieve:{pk}"
+        return make_cache_key(self.cache_resource, suffix)
+
+    # ── Read side ─────────────────────────────────────────────────────────────
+
+    def list(self, request, *args, **kwargs):
+        key    = self._list_cache_key(request)
+        cached = cache.get(key)
+        if cached is not None:
+            return Response(cached)
+        response = super().list(request, *args, **kwargs)
+        cache.set(key, response.data, timeout=CACHE_TTL)
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        key    = self._retrieve_cache_key(request, kwargs.get("pk"))
+        cached = cache.get(key)
+        if cached is not None:
+            return Response(cached)
+        response = super().retrieve(request, *args, **kwargs)
+        cache.set(key, response.data, timeout=CACHE_TTL)
+        return response
+
+    # ── Write side — bump version so all old cache entries are orphaned ───────
+
+    def _bump(self):
+        bump_cache_version(self.cache_resource)
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        if response.status_code in (200, 201):
+            self._bump()
+        return response
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        if response.status_code == 200:
+            self._bump()
+        return response
+
+    def partial_update(self, request, *args, **kwargs):
+        response = super().partial_update(request, *args, **kwargs)
+        if response.status_code == 200:
+            self._bump()
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        response = super().destroy(request, *args, **kwargs)
+        if response.status_code == 204:
+            self._bump()
+        return response
 
 
 # ── ROLE HELPERS ──────────────────────────────────────────────────────────────
@@ -229,10 +327,6 @@ class UserViewSet(viewsets.ModelViewSet):
 # ── CLASSROOMS ────────────────────────────────────────────────────────────────
 
 @extend_schema(tags=["Classrooms Management"])
-@method_decorator(cache_page(CACHE_TTL), name='list')
-@method_decorator(vary_on_headers("Authorization"), name='list')
-@method_decorator(cache_page(CACHE_TTL), name='retrieve')
-@method_decorator(vary_on_headers("Authorization"), name='retrieve')
 @extend_schema_view(
     list=extend_schema(
         summary="List all classrooms",
@@ -244,19 +338,27 @@ class UserViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(summary="Partially update a classroom (Admin or Editor)"),
     destroy=extend_schema(summary="Delete a classroom (Admin only)"),
 )
-class ClassRoomViewSet(viewsets.ModelViewSet):
+class ClassRoomViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/classrooms/
     - Admin/Editor: full read-write (no delete for editor)
     - Teacher: sees only their own classroom
     - Parent: sees all (read)
     """
+    cache_resource     = "classrooms"
     queryset           = ClassRoom.objects.none()
     serializer_class   = ClassRoomSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["name", "teacher__first_name", "teacher__last_name"]
+
+    def _cache_discriminator(self, request) -> str:
+        # Pure teachers see only their own classroom — scope by user id.
+        # Everyone else (admin / editor / parent) sees the full list.
+        if is_pure_teacher(request.user):
+            return f"teacher:{request.user.id}"
+        return "all"
 
     def get_queryset(self):
         user = self.request.user
@@ -269,26 +371,22 @@ class ClassRoomViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not is_admin_or_editor(request.user):
             return Response({"error": "Admin or Editor access required."}, status=403)
-        return super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)  # mixin bumps cache on 201
 
     def update(self, request, *args, **kwargs):
         if not is_admin_or_editor(request.user):
             return Response({"error": "Admin or Editor access required."}, status=403)
-        return super().update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)  # mixin bumps cache on 200
 
     def destroy(self, request, *args, **kwargs):
         if not is_admin(request.user):
             return Response({"error": "Only admins can delete classrooms."}, status=403)
-        return super().destroy(request, *args, **kwargs)
+        return super().destroy(request, *args, **kwargs)  # mixin bumps cache on 204
 
 
 # ── TERMS ─────────────────────────────────────────────────────────────────────
 
 @extend_schema(tags=["Academic Calendar Terms"])
-@method_decorator(cache_page(CACHE_TTL), name='list')
-@method_decorator(vary_on_headers("Authorization"), name='list')
-@method_decorator(cache_page(CACHE_TTL), name='retrieve')
-@method_decorator(vary_on_headers("Authorization"), name='retrieve')
 @extend_schema_view(
     list=extend_schema(
         summary="List all academic terms",
@@ -300,11 +398,17 @@ class ClassRoomViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(summary="Partially update a term (Admin or Editor)"),
     destroy=extend_schema(summary="Delete a term (Admin only)"),
 )
-class TermViewSet(viewsets.ModelViewSet):
+class TermViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/terms/
     GET /api/terms/current/ — returns the active term.
     """
+    cache_resource = "terms"
+    # All authenticated users see the same term list — no role-scoping needed.
+    # The default _cache_discriminator (by role) is intentionally overridden
+    # here to use a single shared cache entry per query string, regardless of role.
+    def _cache_discriminator(self, request) -> str:
+        return "all"
     queryset           = Term.objects.all().order_by('-id')
     serializer_class   = TermSerializer
     permission_classes = [IsAuthenticated]
@@ -313,17 +417,17 @@ class TermViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not is_admin_or_editor(request.user):
             return Response({"error": "Admin or Editor access required."}, status=403)
-        return super().create(request, *args, **kwargs)
+        return super().create(request, *args, **kwargs)  # mixin bumps cache on 201
 
     def update(self, request, *args, **kwargs):
         if not is_admin_or_editor(request.user):
             return Response({"error": "Admin or Editor access required."}, status=403)
-        return super().update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)  # mixin bumps cache on 200
 
     def destroy(self, request, *args, **kwargs):
         if not is_admin(request.user):
             return Response({"error": "Only admins can delete terms."}, status=403)
-        return super().destroy(request, *args, **kwargs)
+        return super().destroy(request, *args, **kwargs)  # mixin bumps cache on 204
 
     @extend_schema(summary="Get the active term", responses={200: TermSerializer})
     @action(detail=False, methods=["get"])
@@ -351,19 +455,30 @@ class TermViewSet(viewsets.ModelViewSet):
     partial_update=extend_schema(summary="Partially update a student (Admin or Editor)"),
     destroy=extend_schema(summary="Soft-deactivate a student (Admin only)"),
 )
-class StudentViewSet(viewsets.ModelViewSet):
+class StudentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/students/
     - Admin/Editor: see and manage all students
     - Teacher: sees only students in their classroom
     - Parent: sees only their own children
     """
+    cache_resource     = "students"
     queryset           = Student.objects.none()
     serializer_class   = StudentSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["first_name", "last_name", "admission_number"]
+
+    def _cache_discriminator(self, request) -> str:
+        # Each parent sees only their own children → scope to user id.
+        # Each teacher sees only their classroom → scope to user id.
+        # Admin / editor share the full unfiltered dataset.
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        if is_pure_teacher(request.user):
+            return f"teacher:{request.user.id}"
+        return "admin_editor"
 
     def get_queryset(self):
         user = self.request.user
@@ -393,15 +508,21 @@ class StudentViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         if not is_admin_or_editor(request.user):
             return Response({"error": "Admin or Editor access required."}, status=403)
-        return super().update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)  # mixin bumps cache on 200
 
     def destroy(self, request, *args, **kwargs):
-        """Soft-delete only. Admin only."""
+        """
+        Soft-delete only. Admin only.
+        This method performs a manual save() and returns a custom 200 response
+        instead of the standard 204 — so the mixin cannot detect it automatically.
+        We call self._bump() explicitly after the save.
+        """
         if not is_admin(request.user):
             return Response({"error": "Only admins can deactivate students."}, status=403)
         obj           = self.get_object()
         obj.is_active = False
         obj.save()
+        self._bump()   # invalidate cache — the student has disappeared from active lists
         return Response({"message": "Student deactivated."})
 
     @extend_schema(summary="Get the parent's own children", responses={200: StudentSerializer(many=True)})
@@ -462,17 +583,27 @@ class StudentViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Create a single attendance record"),
     destroy=extend_schema(summary="Delete an attendance record (Admin only)"),
 )
-class AttendanceViewSet(viewsets.ModelViewSet):
+class AttendanceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/attendance/
     POST /api/attendance/bulk/ — mark a whole class at once.
     """
+    cache_resource     = "attendance"
     queryset           = Attendance.objects.none()
     serializer_class   = AttendanceSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["reason", "student__first_name", "student__last_name"]
+
+    def _cache_discriminator(self, request) -> str:
+        # Attendance is scoped identically to students:
+        # parent → their children only, teacher → their classroom only.
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        if is_pure_teacher(request.user):
+            return f"teacher:{request.user.id}"
+        return "admin_editor"
 
     def get_queryset(self):
         user    = self.request.user
@@ -519,7 +650,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
         """
         POST /api/attendance/bulk/
         Body: { "date": "2025-09-15", "term": 1, "records": [
-                  {"student_id": "...", "status": "present"},
+                  {"student_id": "...", "status": "present", "outlook": "Happy/Energetic"},
                   {"student_id": "...", "status": "absent", "reason": "sick"}
                 ]}
         """
@@ -545,6 +676,7 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                         defaults={
                             "status":      r.get("status", "present"),
                             "reason":      r.get("reason", ""),
+                            "outlook":     r.get("outlook", ""),
                             "term":        term,
                             "recorded_by": request.user,
                         }
@@ -553,6 +685,12 @@ class AttendanceViewSet(viewsets.ModelViewSet):
                     else:    updated += 1
                 except Student.DoesNotExist:
                     errors.append(f"Student {r.get('student_id')} not found")
+
+        # bulk() writes via update_or_create — the mixin's create/update hooks
+        # cannot intercept @action methods.  Bump explicitly so the attendance
+        # list cache is invalidated for all roles immediately after this call.
+        if created + updated > 0:
+            self._bump()
 
         return Response({
             "created": created,
@@ -578,11 +716,12 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Generate an invoice (Admin or Editor)"),
     destroy=extend_schema(summary="Delete an invoice (Admin only)"),
 )
-class InvoiceViewSet(viewsets.ModelViewSet):
+class InvoiceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/invoices/
     Admin/Editor creates invoices. Parents see their children's invoices.
     """
+    cache_resource     = "invoices"
     queryset           = Invoice.objects.none()
     serializer_class   = InvoiceSerializer
     permission_classes = [IsAuthenticated]
@@ -590,9 +729,18 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["invoice_number", "description", "student__first_name", "student__last_name"]
 
+    def _cache_discriminator(self, request) -> str:
+        # Parents see only their children's invoices — scope by user id.
+        # Admin / editor share the full dataset (further narrowed by query params,
+        # which are already baked into the cache key via the query string).
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        return "admin_editor"
+
     def get_queryset(self):
         user = self.request.user
-        qs   = Invoice.objects.select_related("student", "term").prefetch_related("payments")
+        #qs   = Invoice.objects.select_related("student", "term").prefetch_related("payments")
+        qs = Invoice.objects.select_related("student", "term").prefetch_related("payments", "line_items")
         if is_parent(user):
             qs = qs.filter(student__parents=user)
         student = self.request.query_params.get("student")
@@ -739,14 +887,110 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
             return Response({"error": "Only admins can delete credit notes."}, status=403)
         return super().destroy(request, *args, **kwargs)
 
+# ── EXPENDITURES ──────────────────────────────────────────────────────────────
+ 
+@extend_schema(tags=["Financial Expenditures"])
+@extend_schema_view(
+    list=extend_schema(
+        summary="List expenditures",
+        parameters=[
+            OpenApiParameter(name="category",  description="Filter by category slug", required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="date_from", description="YYYY-MM-DD start date",   required=False, type=OpenApiTypes.DATE),
+            OpenApiParameter(name="date_to",   description="YYYY-MM-DD end date",     required=False, type=OpenApiTypes.DATE),
+            OpenApiParameter(name="page_size", description="Results per page",        required=False, type=OpenApiTypes.INT),
+        ]
+    ),
+    create=extend_schema(summary="Record an expenditure (Admin or Editor)"),
+    destroy=extend_schema(summary="Delete an expenditure record (Admin only)"),
+)
+class ExpenditureViewSet(viewsets.ModelViewSet):
+    """
+    /api/expenditures/
+ 
+    Admin/Editor records school outgoings — salaries, utilities, supplies, etc.
+    Parents cannot access this endpoint.
+ 
+    Supports filtering by category, date range, and free-text search across
+    description and reference.
+ 
+    GET  /api/expenditures/summary/  → total spent, breakdown by category
+    """
+    queryset           = Expenditure.objects.none()
+    serializer_class   = ExpenditureSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class   = DynamicPageSizePagination
+    filter_backends    = [filters.SearchFilter]
+    search_fields      = ["description", "reference", "notes"]
+ 
+    def get_queryset(self):
+        user = self.request.user
+        if is_parent(user):
+            return Expenditure.objects.none()  # parents never see expenditures
+ 
+        qs = Expenditure.objects.select_related("recorded_by")
+ 
+        category  = self.request.query_params.get("category")
+        date_from = self.request.query_params.get("date_from")
+        date_to   = self.request.query_params.get("date_to")
+ 
+        if category:  qs = qs.filter(category=category)
+        if date_from: qs = qs.filter(date__gte=date_from)
+        if date_to:   qs = qs.filter(date__lte=date_to)
+ 
+        return qs.order_by("-date", "-created_at")
+ 
+    def perform_create(self, serializer):
+        if not is_admin_or_editor(self.request.user):
+            raise PermissionError("Admin or Editor access required.")
+        serializer.save(recorded_by=self.request.user)
+ 
+    def destroy(self, request, *args, **kwargs):
+        if not is_admin(request.user):
+            return Response({"error": "Only admins can delete expenditure records."}, status=403)
+        return super().destroy(request, *args, **kwargs)
+ 
+    @extend_schema(
+        summary="Expenditure totals and category breakdown",
+        parameters=[
+            OpenApiParameter(name="date_from", description="YYYY-MM-DD", required=False, type=OpenApiTypes.DATE),
+            OpenApiParameter(name="date_to",   description="YYYY-MM-DD", required=False, type=OpenApiTypes.DATE),
+        ],
+        responses={200: inline_serializer(
+            name="ExpenditureSummaryResponse",
+            fields={
+                "total_spent":        drf_serializers.FloatField(),
+                "count":              drf_serializers.IntegerField(),
+                "by_category":        drf_serializers.ListField(child=drf_serializers.DictField()),
+            }
+        )}
+    )
+    @action(detail=False, methods=["get"])
+    def summary(self, request):
+        """
+        GET /api/expenditures/summary/?date_from=YYYY-MM-DD&date_to=YYYY-MM-DD
+ 
+        Returns total spent and a per-category breakdown.
+        """
+        from django.db.models import Sum, Count
+ 
+        qs = self.get_queryset()
+        totals = qs.aggregate(total=Sum("amount"), count=Count("id"))
+ 
+        by_category = list(
+            qs.values("category")
+              .annotate(total=Sum("amount"), count=Count("id"))
+              .order_by("-total")
+        )
+ 
+        return Response({
+            "total_spent": totals["total"] or 0,
+            "count":       totals["count"] or 0,
+            "by_category": by_category,
+        })
 
 # ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
 
 @extend_schema(tags=["Announcements"])
-@method_decorator(cache_page(CACHE_TTL), name='list')
-@method_decorator(vary_on_headers("Authorization"), name='list')
-@method_decorator(cache_page(CACHE_TTL), name='retrieve')
-@method_decorator(vary_on_headers("Authorization"), name='retrieve')
 @extend_schema_view(
     list=extend_schema(
         summary="List announcements",
@@ -755,17 +999,23 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Post an announcement (Staff only)"),
     destroy=extend_schema(summary="Delete an announcement (Admin only)"),
 )
-class AnnouncementViewSet(viewsets.ModelViewSet):
+class AnnouncementViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/announcements/
     Staff posts. All users read. Only admin deletes.
     """
+    cache_resource     = "announcements"
     queryset           = Announcement.objects.none()
     serializer_class   = AnnouncementSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["title", "body"]
+
+    def _cache_discriminator(self, request) -> str:
+        # Parents only see audience="all"|"parents" announcements;
+        # staff see everything.  Two separate cache buckets.
+        return "parent" if is_parent(request.user) else "staff"
 
     def get_queryset(self):
         user = self.request.user
@@ -778,11 +1028,13 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         if not is_staff(self.request.user):
             raise PermissionError("Staff access required.")
         serializer.save(author=self.request.user)
+        # VersionedCacheMixin.create() wraps this call and bumps the cache
+        # version on success — no extra work needed here.
 
     def destroy(self, request, *args, **kwargs):
         if not is_admin(request.user):
             return Response({"error": "Only admins can delete announcements."}, status=403)
-        return super().destroy(request, *args, **kwargs)
+        return super().destroy(request, *args, **kwargs)  # mixin bumps cache on 204
 
 
 # ── ASSIGNMENTS ───────────────────────────────────────────────────────────────
@@ -800,17 +1052,28 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Create an assignment (Staff only)"),
     destroy=extend_schema(summary="Delete an assignment (Admin only)"),
 )
-class AssignmentViewSet(viewsets.ModelViewSet):
+class AssignmentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/assignments/
     Staff creates. Parents see their child's class assignments.
     """
+    cache_resource     = "assignments"
     queryset           = Assignment.objects.none()
     serializer_class   = AssignmentSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["title", "description"]
+
+    def _cache_discriminator(self, request) -> str:
+        # Parents see assignments only for their children's classes — scope by id.
+        # Teachers see only their own assignments — scope by id.
+        # Admin / editor see everything (query params baked into key).
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        if is_pure_teacher(request.user):
+            return f"teacher:{request.user.id}"
+        return "admin_editor"
 
     def get_queryset(self):
         user = self.request.user
@@ -860,18 +1123,29 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Write a development report (Staff only)"),
     destroy=extend_schema(summary="Delete a report (Admin only)"),
 )
-class DevelopmentReportViewSet(viewsets.ModelViewSet):
+class DevelopmentReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/reports/
     Staff writes. Parent reads published reports for their children only.
     POST /api/reports/<id>/publish/ — admin publishes to parents.
     """
+    cache_resource     = "reports"
     queryset           = DevelopmentReport.objects.none()
     serializer_class   = DevelopmentReportSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["comment", "strengths", "areas_to_improve", "student__first_name", "student__last_name"]
+
+    def _cache_discriminator(self, request) -> str:
+        # Parents see only published reports for their own children.
+        # Teachers see only their classroom's reports.
+        # Admin / editor see all reports with optional filters.
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        if is_pure_teacher(request.user):
+            return f"teacher:{request.user.id}"
+        return "admin_editor"
 
     def get_queryset(self):
         user = self.request.user
@@ -922,6 +1196,9 @@ class DevelopmentReportViewSet(viewsets.ModelViewSet):
             return Response({"message": "Already published."})
         report.is_published = True
         report.save(update_fields=["is_published"])
+        # publish() bypasses standard CRUD so the mixin cannot detect this write.
+        # Bump explicitly — parents must see the newly published report immediately.
+        self._bump()
         return Response({"message": f"Report for {report.student.full_name} is now visible to parents."})
 
 
