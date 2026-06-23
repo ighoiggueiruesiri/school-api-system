@@ -169,7 +169,7 @@ class VersionedCacheMixin:
 def is_admin(user):           return user.role == "admin"
 def is_editor(user):          return user.role == "editor"
 def is_admin_or_editor(user): return user.role in ("admin", "editor")
-def is_staff(user):           return user.role in ("admin", "editor", "teacher")
+def is_staff(user):           return user.role in ("admin", "editor", "teacher", "non_academic")
 def is_teacher(user):         return is_staff(user)   # kept for backward compat
 def is_parent(user):          return user.role == "parent"
 def is_pure_teacher(user):    return user.role == "teacher"  # scoped-to-class checks
@@ -254,7 +254,7 @@ class MeView(APIView):
     list=extend_schema(
         summary="List all users",
         parameters=[
-            OpenApiParameter(name="role", description="Filter by role: admin | editor | teacher | parent", required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="role", description="Filter by role: admin | editor | teacher | non_academic | parent", required=False, type=OpenApiTypes.STR),
             OpenApiParameter(name="page_size", description="Results per page (default 10, max 200)", required=False, type=OpenApiTypes.INT),
         ]
     ),
@@ -266,7 +266,7 @@ class MeView(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     """
     /api/users/
-    - Admin creates admin/editor/teacher accounts here.
+    - Admin creates admin/editor/teacher/non_academic accounts here.
     - Parents register via /api/register/ instead.
     - Editor role: view + edit only; destroy is admin-only.
     """
@@ -285,7 +285,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return qs.order_by('-id')
 
     @extend_schema(
-        summary="Create an Admin, Editor, or Teacher account (Admin only)",
+        summary="Create an Admin, Editor, Teacher, or Non-Academic account (Admin only)",
         request=inline_serializer(
             name="AdminCreateUserRequest",
             fields={
@@ -293,8 +293,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 "first_name": drf_serializers.CharField(),
                 "last_name":  drf_serializers.CharField(),
                 "phone":      drf_serializers.CharField(required=False),
-                "role":       drf_serializers.ChoiceField(choices=["admin", "editor", "teacher"]),
+                "role":       drf_serializers.ChoiceField(choices=["admin", "editor", "teacher", "non_academic"]),
                 "password":   drf_serializers.CharField(required=False),
+                "staff_profile": drf_serializers.DictField(required=False, help_text="Nested HR data for staff")
             }
         ),
         responses={201: UserSerializer}
@@ -302,9 +303,23 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not is_admin(request.user):
             return Response({"error": "Only admins can create user accounts."}, status=403)
-        data     = request.data.copy()
+        
+        # 1. Copy the incoming data so we can modify it
+        data = request.data.copy()
+        
+        # 2. Extract and remove specific fields before passing to the User creator
         password = data.pop("password", "ChangeMe123")
-        user     = User.objects.create_user(password=password, **data)
+        profile_data = data.pop("staff_profile", None) 
+        
+        # 3. Create the base User (Authentication layer)
+        user = User.objects.create_user(password=password, **data)
+
+        # 4. If this user is a staff member AND we received HR data, create the profile
+        if profile_data and user.role in ["teacher", "non_academic"]:
+            from .models import StaffProfile
+            StaffProfile.objects.create(user=user, **profile_data)
+
+        # 5. Return the fully nested representation
         return Response(UserSerializer(user).data, status=201)
 
     def destroy(self, request, *args, **kwargs):

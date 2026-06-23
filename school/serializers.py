@@ -7,7 +7,7 @@ from drf_spectacular.types import OpenApiTypes
 from .models import (
     ClassRoom, Term, Student, Attendance,
     Invoice, InvoiceLineItem, Payment, CreditNote, Expenditure,
-    Announcement, Assignment, DevelopmentReport, AuditLog, Inquiry
+    Announcement, Assignment, DevelopmentReport, AuditLog, Inquiry, StaffProfile
 )
 
 User = get_user_model()
@@ -53,13 +53,33 @@ class RegisterSerializer(serializers.Serializer):
             role="parent", **validated_data
         )
 
+class StaffProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaffProfile
+        fields = "__all__"
+        read_only_fields = ["id", "user"]
 
 class UserSerializer(serializers.ModelSerializer):
+    staff_profile = StaffProfileSerializer(required=False) # ← Add nested profile
+
     class Meta:
         model  = User
-        fields = ["id","email","first_name","last_name","phone","role","profile_photo","date_joined","is_active"]
+        fields = ["id","email","first_name","last_name","phone","role","profile_photo","date_joined","is_active", "staff_profile"]
         read_only_fields = ["id","role","date_joined"]
 
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop("staff_profile", None)
+        
+        # Update main user table
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Update or create staff profile if applicable
+        if profile_data is not None and instance.role in ["teacher", "non_academic"]:
+            StaffProfile.objects.update_or_create(user=instance, defaults=profile_data)
+
+        return instance
 
 # ── School structure ──────────────────────────────────────────────────────────
 
