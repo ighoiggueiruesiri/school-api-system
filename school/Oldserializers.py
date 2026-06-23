@@ -97,6 +97,13 @@ class ClassRoomSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.INT)
     def get_student_count(self, obj):
+        # FIX (N+1): ClassRoomViewSet.get_queryset() annotates `student_count_annotated`
+        # via a single DB-level COUNT so listing N classrooms costs 1 query, not N+1.
+        # We read the annotation here and only fall back to a live query when this
+        # serializer is used outside that viewset (e.g. in tests or admin).
+        annotated = getattr(obj, "student_count_annotated", None)
+        if annotated is not None:
+            return annotated
         return obj.students.filter(is_active=True).count()
 
 
@@ -192,6 +199,11 @@ class PaymentSerializer(serializers.ModelSerializer):
     A single instalment or full payment against an invoice.
     `paid_by_name` and `invoice_number` are read-only convenience fields
     for displaying receipt information without extra API calls.
+
+    NOTE: PaymentViewSet.get_queryset() must include:
+        select_related("invoice__student__current_class", "invoice__term", "paid_by")
+    All SerializerMethodFields below traverse those join paths — without the
+    deep select_related the list endpoint would fire N×3 extra queries.
     """
     paid_by_name    = serializers.SerializerMethodField()
     invoice_number  = serializers.SerializerMethodField()
@@ -222,23 +234,28 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_paid_by_name(self, obj):
+        # Covered by select_related("paid_by") in PaymentViewSet
         return obj.paid_by.full_name if obj.paid_by else None
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_invoice_number(self, obj):
+        # Covered by select_related("invoice") in PaymentViewSet
         return obj.invoice.invoice_number
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_student_name(self, obj):
+        # Covered by select_related("invoice__student") in PaymentViewSet
         return obj.invoice.student.full_name
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_class_name(self, obj):
+        # Covered by select_related("invoice__student__current_class") in PaymentViewSet
         cls = obj.invoice.student.current_class
         return cls.name if cls else None
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_term_name(self, obj):
+        # Covered by select_related("invoice__term") in PaymentViewSet
         return str(obj.invoice.term)
 
 
@@ -246,6 +263,11 @@ class InvoiceSerializer(serializers.ModelSerializer):
     """
     Full invoice representation including nested line items and payments.
     `line_items` are accepted on create/update (writable nested).
+
+    NOTE: InvoiceViewSet.get_queryset() must use:
+        select_related("student__current_class", "term")
+    `get_class_name` traverses student → current_class; without the deep
+    select_related it fires an extra query per invoice row in a list.
     """
     balance      = serializers.FloatField(read_only=True)
     student_name = serializers.SerializerMethodField()
@@ -279,10 +301,12 @@ class InvoiceSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_student_name(self, obj):
+        # Covered by select_related("student__current_class") in InvoiceViewSet
         return obj.student.full_name
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_class_name(self, obj):
+        # Covered by select_related("student__current_class") in InvoiceViewSet
         cls = obj.student.current_class
         return cls.name if cls else None
 
@@ -380,6 +404,7 @@ class AnnouncementSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.STR)
     def get_author_name(self, obj):
+        # Covered by select_related("author") in AnnouncementViewSet
         return obj.author.full_name if obj.author else "School"
 
 

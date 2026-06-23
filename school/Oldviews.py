@@ -2,6 +2,7 @@
 import uuid
 from django.db import transaction
 from django.utils import timezone
+from django.db.models import Count, Q, Sum, Avg  # FIX: top-level import avoids repeated local imports
 from rest_framework import viewsets, status, generics, filters
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
@@ -21,7 +22,7 @@ from .cache_utils import bump_cache_version, make_cache_key, CACHE_TTL
 from .models import (
     User, ClassRoom, Term, Student, Attendance,
     Invoice, Payment, Announcement, Assignment, DevelopmentReport, CreditNote, AuditLog,
-    Inquiry, Expenditure,  
+    Inquiry, Expenditure,
 )
 from .serializers import (
     LoginSerializer, RegisterSerializer, UserSerializer,
@@ -32,6 +33,7 @@ from .serializers import (
     InquirySerializer, ExpenditureSerializer,
 )
 
+
 # ── PAGINATION ────────────────────────────────────────────────────────────────
 
 class DynamicPageSizePagination(PageNumberPagination):
@@ -40,9 +42,9 @@ class DynamicPageSizePagination(PageNumberPagination):
     Returns { count, pages, next, previous, results } so the React
     pagination bar can display "1–10 of 47" without a second request.
     """
-    page_size              = 10
-    page_size_query_param  = "page_size"
-    max_page_size          = 200
+    page_size             = 10
+    page_size_query_param = "page_size"
+    max_page_size         = 200
 
     def get_paginated_response(self, data):
         return Response({
@@ -278,7 +280,10 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields      = ["first_name", "last_name", "email"]
 
     def get_queryset(self):
-        qs   = User.objects.all()
+        # FIX (N+1): UserSerializer nests StaffProfileSerializer, so without
+        # select_related("staff_profile") every user row in a list triggers a
+        # separate SELECT on school_staffprofile.  One JOIN eliminates all of them.
+        qs   = User.objects.select_related("staff_profile")
         role = self.request.query_params.get("role")
         if role:
             qs = qs.filter(role=role)
@@ -303,14 +308,14 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if not is_admin(request.user):
             return Response({"error": "Only admins can create user accounts."}, status=403)
-        
+
         # 1. Copy the incoming data so we can modify it
         data = request.data.copy()
-        
+
         # 2. Extract and remove specific fields before passing to the User creator
-        password = data.pop("password", "ChangeMe123")
-        profile_data = data.pop("staff_profile", None) 
-        
+        password     = data.pop("password", "ChangeMe123")
+        profile_data = data.pop("staff_profile", None)
+
         # 3. Create the base User (Authentication layer)
         user = User.objects.create_user(password=password, **data)
 
@@ -377,11 +382,25 @@ class ClassRoomViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+
+        # FIX (N+1): ClassRoomSerializer.get_student_count() used to fire one
+        # COUNT query per classroom row.  We push that aggregation into the main
+        # query so listing N classrooms costs exactly 1 DB round-trip instead of
+        # N+1.  The serializer reads obj.student_count_annotated and falls back
+        # to the live query only when this annotation is absent (e.g. unit tests).
+        base_qs = ClassRoom.objects.annotate(
+            student_count_annotated=Count(
+                "students",
+                filter=Q(students__is_active=True),
+            )
+        )
+
         # Pure teachers see only their assigned classroom
         if is_pure_teacher(user):
-            return ClassRoom.objects.filter(teacher=user).order_by('-id')
+            return base_qs.filter(teacher=user).order_by('-id')
+
         # Admin, editor, parent → all classrooms
-        return ClassRoom.objects.all().order_by('-id')
+        return base_qs.order_by('-id')
 
     def create(self, request, *args, **kwargs):
         if not is_admin_or_editor(request.user):
@@ -568,10 +587,22 @@ class StudentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
         qs      = student.attendance.all()
         if term_id:
             qs = qs.filter(term_id=term_id)
-        total   = qs.count()
-        present = qs.filter(status="present").count()
-        absent  = qs.filter(status="absent").count()
-        late    = qs.filter(status="late").count()
+
+        # FIX (4 queries → 1): The original code called .count() four times —
+        # once for total, then once per status.  A single conditional aggregation
+        # (COUNT with a CASE/WHEN expression) retrieves all four numbers in one
+        # SQL round-trip.
+        agg = qs.aggregate(
+            total=Count("id"),
+            present=Count("id", filter=Q(status="present")),
+            absent=Count("id",  filter=Q(status="absent")),
+            late=Count("id",    filter=Q(status="late")),
+        )
+        total   = agg["total"]
+        present = agg["present"]
+        absent  = agg["absent"]
+        late    = agg["late"]
+
         return Response({
             "student":            student.full_name,
             "total_days":         total,
@@ -682,10 +713,25 @@ class AttendanceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
         created = updated = 0
         errors  = []
 
+        # FIX (N queries → 1): The original loop called Student.objects.get()
+        # for every record in the batch, firing one SELECT per student.  For a
+        # class of 30 pupils that is 30 round-trips before a single write.
+        # We fetch all mentioned students in ONE query up front and look them up
+        # from a plain dict inside the loop.
+        student_ids = [r.get("student_id") for r in records if r.get("student_id")]
+        student_map = {
+            str(s_obj.id): s_obj
+            for s_obj in Student.objects.filter(id__in=student_ids)
+        }
+
         with transaction.atomic():
             for r in records:
+                sid     = str(r.get("student_id", ""))
+                student = student_map.get(sid)
+                if not student:
+                    errors.append(f"Student {r.get('student_id')} not found")
+                    continue
                 try:
-                    student = Student.objects.get(id=r["student_id"])
                     _, made = Attendance.objects.update_or_create(
                         student=student, date=date,
                         defaults={
@@ -698,8 +744,8 @@ class AttendanceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
                     )
                     if made: created += 1
                     else:    updated += 1
-                except Student.DoesNotExist:
-                    errors.append(f"Student {r.get('student_id')} not found")
+                except Exception as exc:
+                    errors.append(f"Student {sid}: {exc}")
 
         # bulk() writes via update_or_create — the mixin's create/update hooks
         # cannot intercept @action methods.  Bump explicitly so the attendance
@@ -754,8 +800,17 @@ class InvoiceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        #qs   = Invoice.objects.select_related("student", "term").prefetch_related("payments")
-        qs = Invoice.objects.select_related("student", "term").prefetch_related("payments", "line_items")
+
+        # FIX (N+1): InvoiceSerializer.get_class_name() accesses
+        # obj.student.current_class.  The original select_related("student", "term")
+        # stopped at the student level, so every invoice row triggered an extra
+        # SELECT on school_classroom.  Extending the path to "student__current_class"
+        # folds that join into the initial query at no extra cost.
+        qs = Invoice.objects.select_related(
+            "student__current_class",   # covers get_class_name()
+            "term",
+        ).prefetch_related("payments", "line_items")
+
         if is_parent(user):
             qs = qs.filter(student__parents=user)
         student = self.request.query_params.get("student")
@@ -769,10 +824,10 @@ class InvoiceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     def perform_create(self, serializer):
         if not is_admin_or_editor(self.request.user):
             raise PermissionError("Admin or Editor access required.")
-        student   = serializer.validated_data["student"]
-        term      = serializer.validated_data["term"]
+        student    = serializer.validated_data["student"]
+        term       = serializer.validated_data["term"]
         short_uuid = uuid.uuid4().hex[:6].upper()
-        num       = f"INV-{student.admission_number}-{term.id}-{short_uuid}"
+        num        = f"INV-{student.admission_number}-{term.id}-{short_uuid}"
         serializer.save(invoice_number=num)
 
     def destroy(self, request, *args, **kwargs):
@@ -797,20 +852,29 @@ class InvoiceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     @action(detail=False, methods=["get"])
     def summary(self, request):
         """GET /api/invoices/summary/?student=<id>"""
-        from django.db.models import Sum
         qs         = self.get_queryset()
         student_id = request.query_params.get("student")
         if student_id:
             qs = qs.filter(student_id=student_id)
-        totals = qs.aggregate(billed=Sum("amount"), paid=Sum("amount_paid"))
+
+        # FIX (3 queries → 1): The original code ran aggregate() then two
+        # separate count() calls — three DB round-trips for one dashboard widget.
+        # A single aggregate() with conditional Count expressions retrieves all
+        # five numbers in one SQL query.
+        totals = qs.aggregate(
+            billed=Sum("amount"),
+            paid=Sum("amount_paid"),
+            invoice_count=Count("id"),
+            unpaid_count=Count("id", filter=Q(status__in=["unpaid", "partial"])),
+        )
         billed = totals["billed"] or 0
         paid   = totals["paid"]   or 0
         return Response({
             "total_billed":  billed,
             "total_paid":    paid,
             "balance":       billed - paid,
-            "invoice_count": qs.count(),
-            "unpaid_count":  qs.filter(status__in=["unpaid", "partial"]).count(),
+            "invoice_count": totals["invoice_count"],
+            "unpaid_count":  totals["unpaid_count"],
         })
 
 
@@ -826,11 +890,13 @@ class InvoiceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     create=extend_schema(summary="Record a payment (Admin or Editor)"),
     destroy=extend_schema(summary="Delete a payment record (Admin only)"),
 )
-class PaymentViewSet(viewsets.ModelViewSet):
+class PaymentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/payments/
     Admin/Editor records cash / bank transfer / POS payments manually.
     """
+    # FIX: Added VersionedCacheMixin — every list/retrieve was hitting the DB.
+    cache_resource     = "payments"
     queryset           = Payment.objects.none()
     serializer_class   = PaymentSerializer
     permission_classes = [IsAuthenticated]
@@ -838,8 +904,26 @@ class PaymentViewSet(viewsets.ModelViewSet):
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["reference", "notes", "invoice__invoice_number"]
 
+    def _cache_discriminator(self, request) -> str:
+        # Parents see only their children's payments — scope by user id.
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        return "admin_editor"
+
     def get_queryset(self):
-        qs = Payment.objects.select_related("invoice__student")
+        # FIX (N+1): PaymentSerializer accesses five related paths:
+        #   • obj.paid_by.full_name           → "paid_by"
+        #   • obj.invoice.invoice_number      → "invoice"  (already there)
+        #   • obj.invoice.student.full_name   → "invoice__student"
+        #   • obj.invoice.student.current_class.name → "invoice__student__current_class"
+        #   • obj.invoice.term (str)          → "invoice__term"
+        # The original select_related("invoice__student") missed three of those,
+        # causing up to 3 extra SELECT queries per payment row in a list.
+        qs = Payment.objects.select_related(
+            "invoice__student__current_class",
+            "invoice__term",
+            "paid_by",
+        )
         if is_parent(self.request.user):
             qs = qs.filter(invoice__student__parents=self.request.user)
         invoice = self.request.query_params.get("invoice")
@@ -870,11 +954,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Log a credit note (Admin or Editor)"),
     destroy=extend_schema(summary="Delete a credit note (Admin only)"),
 )
-class CreditNoteViewSet(viewsets.ModelViewSet):
+class CreditNoteViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/credit-notes/
     Admin/Editor records parent overpayments manually.
     """
+    # FIX: Added VersionedCacheMixin — every list/retrieve was hitting the DB.
+    cache_resource     = "credit_notes"
     queryset           = CreditNote.objects.none()
     serializer_class   = CreditNoteSerializer
     permission_classes = [IsAuthenticated]
@@ -882,8 +968,15 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["reference", "notes", "student__first_name", "student__last_name"]
 
+    def _cache_discriminator(self, request) -> str:
+        if is_parent(request.user):
+            return f"parent:{request.user.id}"
+        return "admin_editor"
+
     def get_queryset(self):
         user = self.request.user
+        # select_related("student", "logged_by") avoids N+1 for the two
+        # CharField(source="…") fields on CreditNoteSerializer.
         qs   = CreditNote.objects.select_related("student", "logged_by")
         if is_parent(user):
             return qs.filter(student__parents=user)
@@ -902,8 +995,9 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
             return Response({"error": "Only admins can delete credit notes."}, status=403)
         return super().destroy(request, *args, **kwargs)
 
+
 # ── EXPENDITURES ──────────────────────────────────────────────────────────────
- 
+
 @extend_schema(tags=["Financial Expenditures"])
 @extend_schema_view(
     list=extend_schema(
@@ -918,52 +1012,58 @@ class CreditNoteViewSet(viewsets.ModelViewSet):
     create=extend_schema(summary="Record an expenditure (Admin or Editor)"),
     destroy=extend_schema(summary="Delete an expenditure record (Admin only)"),
 )
-class ExpenditureViewSet(viewsets.ModelViewSet):
+class ExpenditureViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     """
     /api/expenditures/
- 
+
     Admin/Editor records school outgoings — salaries, utilities, supplies, etc.
     Parents cannot access this endpoint.
- 
+
     Supports filtering by category, date range, and free-text search across
     description and reference.
- 
+
     GET  /api/expenditures/summary/  → total spent, breakdown by category
     """
+    # FIX: Added VersionedCacheMixin — every list/retrieve was hitting the DB.
+    cache_resource     = "expenditures"
     queryset           = Expenditure.objects.none()
     serializer_class   = ExpenditureSerializer
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
     search_fields      = ["description", "reference", "notes"]
- 
+
+    def _cache_discriminator(self, request) -> str:
+        # Expenditures are staff-only; no parent bucket needed.
+        return "staff"
+
     def get_queryset(self):
         user = self.request.user
         if is_parent(user):
             return Expenditure.objects.none()  # parents never see expenditures
- 
+
         qs = Expenditure.objects.select_related("recorded_by")
- 
+
         category  = self.request.query_params.get("category")
         date_from = self.request.query_params.get("date_from")
         date_to   = self.request.query_params.get("date_to")
- 
+
         if category:  qs = qs.filter(category=category)
         if date_from: qs = qs.filter(date__gte=date_from)
         if date_to:   qs = qs.filter(date__lte=date_to)
- 
+
         return qs.order_by("-date", "-created_at")
- 
+
     def perform_create(self, serializer):
         if not is_admin_or_editor(self.request.user):
             raise PermissionError("Admin or Editor access required.")
         serializer.save(recorded_by=self.request.user)
- 
+
     def destroy(self, request, *args, **kwargs):
         if not is_admin(request.user):
             return Response({"error": "Only admins can delete expenditure records."}, status=403)
         return super().destroy(request, *args, **kwargs)
- 
+
     @extend_schema(
         summary="Expenditure totals and category breakdown",
         parameters=[
@@ -973,9 +1073,9 @@ class ExpenditureViewSet(viewsets.ModelViewSet):
         responses={200: inline_serializer(
             name="ExpenditureSummaryResponse",
             fields={
-                "total_spent":        drf_serializers.FloatField(),
-                "count":              drf_serializers.IntegerField(),
-                "by_category":        drf_serializers.ListField(child=drf_serializers.DictField()),
+                "total_spent": drf_serializers.FloatField(),
+                "count":       drf_serializers.IntegerField(),
+                "by_category": drf_serializers.ListField(child=drf_serializers.DictField()),
             }
         )}
     )
@@ -983,25 +1083,24 @@ class ExpenditureViewSet(viewsets.ModelViewSet):
     def summary(self, request):
         """
         GET /api/expenditures/summary/?date_from=YYYY-MM-DD&date_to=YYYY-MM-DD
- 
+
         Returns total spent and a per-category breakdown.
         """
-        from django.db.models import Sum, Count
- 
-        qs = self.get_queryset()
+        qs     = self.get_queryset()
         totals = qs.aggregate(total=Sum("amount"), count=Count("id"))
- 
+
         by_category = list(
             qs.values("category")
               .annotate(total=Sum("amount"), count=Count("id"))
               .order_by("-total")
         )
- 
+
         return Response({
             "total_spent": totals["total"] or 0,
             "count":       totals["count"] or 0,
             "by_category": by_category,
         })
+
 
 # ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────────
 
@@ -1034,7 +1133,12 @@ class AnnouncementViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        qs   = Announcement.objects.all()
+
+        # FIX (N+1): AnnouncementSerializer.get_author_name() accesses
+        # obj.author.full_name.  Without select_related("author") every row in
+        # a list fires a separate SELECT on the users table.
+        qs = Announcement.objects.select_related("author")
+
         if is_parent(user):
             qs = qs.filter(audience__in=["all", "parents"])
         return qs.order_by('-id')
@@ -1105,7 +1209,7 @@ class AssignmentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
             return qs.filter(teacher=user).order_by('-id')
 
         # Admin / editor → all, with optional filters
-        term = self.request.query_params.get("term")
+        term  = self.request.query_params.get("term")
         type_ = self.request.query_params.get("type")
         if term:  qs = qs.filter(term_id=term)
         if type_: qs = qs.filter(type=type_)
@@ -1224,17 +1328,17 @@ class DevelopmentReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     list=extend_schema(
         summary="List audit log entries (Admin only)",
         parameters=[
-            OpenApiParameter(name="user_email",     description="Filter by actor email",                        required=False, type=OpenApiTypes.STR),
-            OpenApiParameter(name="user_role",      description="Filter by role: admin|editor|teacher|parent",  required=False, type=OpenApiTypes.STR),
-            OpenApiParameter(name="method",         description="HTTP verb: GET|POST|PATCH|DELETE",             required=False, type=OpenApiTypes.STR),
-            OpenApiParameter(name="response_status",description="HTTP status code, e.g. 200 or 403",           required=False, type=OpenApiTypes.INT),
-            OpenApiParameter(name="resource_type",  description="Resource name, e.g. students|invoices",       required=False, type=OpenApiTypes.STR),
-            OpenApiParameter(name="action",         description="Action code, e.g. login.success|delete",      required=False, type=OpenApiTypes.STR),
-            OpenApiParameter(name="ip_address",     description="Filter by client IP address",                 required=False, type=OpenApiTypes.STR),
-            OpenApiParameter(name="from",           description="ISO date-time: 2025-01-01T00:00:00",          required=False, type=OpenApiTypes.DATETIME),
-            OpenApiParameter(name="to",             description="ISO date-time: 2025-12-31T23:59:59",          required=False, type=OpenApiTypes.DATETIME),
-            OpenApiParameter(name="failures_only",  description="true — show only 4xx / 5xx responses",        required=False, type=OpenApiTypes.BOOL),
-            OpenApiParameter(name="page_size",      description="Results per page (default 25)",               required=False, type=OpenApiTypes.INT),
+            OpenApiParameter(name="user_email",      description="Filter by actor email",                        required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="user_role",       description="Filter by role: admin|editor|teacher|parent",  required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="method",          description="HTTP verb: GET|POST|PATCH|DELETE",             required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="response_status", description="HTTP status code, e.g. 200 or 403",           required=False, type=OpenApiTypes.INT),
+            OpenApiParameter(name="resource_type",   description="Resource name, e.g. students|invoices",       required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="action",          description="Action code, e.g. login.success|delete",      required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="ip_address",      description="Filter by client IP address",                 required=False, type=OpenApiTypes.STR),
+            OpenApiParameter(name="from",            description="ISO date-time: 2025-01-01T00:00:00",          required=False, type=OpenApiTypes.DATETIME),
+            OpenApiParameter(name="to",              description="ISO date-time: 2025-12-31T23:59:59",          required=False, type=OpenApiTypes.DATETIME),
+            OpenApiParameter(name="failures_only",   description="true — show only 4xx / 5xx responses",        required=False, type=OpenApiTypes.BOOL),
+            OpenApiParameter(name="page_size",       description="Results per page (default 25)",               required=False, type=OpenApiTypes.INT),
         ]
     ),
     retrieve=extend_schema(summary="Retrieve a single audit log entry (Admin only)"),
@@ -1296,14 +1400,14 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         responses={200: inline_serializer(
             name="AuditSummaryResponse",
             fields={
-                "total_requests":   drf_serializers.IntegerField(),
-                "failed_requests":  drf_serializers.IntegerField(),
-                "error_rate_pct":   drf_serializers.FloatField(),
-                "avg_response_ms":  drf_serializers.FloatField(),
-                "by_action":        drf_serializers.DictField(child=drf_serializers.IntegerField()),
-                "by_resource":      drf_serializers.DictField(child=drf_serializers.IntegerField()),
-                "by_status_class":  drf_serializers.DictField(child=drf_serializers.IntegerField()),
-                "by_role":          drf_serializers.DictField(child=drf_serializers.IntegerField()),
+                "total_requests":  drf_serializers.IntegerField(),
+                "failed_requests": drf_serializers.IntegerField(),
+                "error_rate_pct":  drf_serializers.FloatField(),
+                "avg_response_ms": drf_serializers.FloatField(),
+                "by_action":       drf_serializers.DictField(child=drf_serializers.IntegerField()),
+                "by_resource":     drf_serializers.DictField(child=drf_serializers.IntegerField()),
+                "by_status_class": drf_serializers.DictField(child=drf_serializers.IntegerField()),
+                "by_role":         drf_serializers.DictField(child=drf_serializers.IntegerField()),
             }
         )}
     )
@@ -1317,14 +1421,20 @@ class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
         if not is_admin(request.user):
             return Response({"error": "Admin access required."}, status=403)
 
-        from django.db.models import Count, Avg, IntegerField
-        from django.db.models.functions import ExtractHour
-
         qs = self.get_queryset()
 
-        total    = qs.count()
-        failed   = qs.filter(response_status__gte=400).count()
-        avg_resp = qs.aggregate(avg=Avg("response_time_ms"))["avg"] or 0
+        # FIX (3 queries → 1): The original code called qs.count() twice and
+        # qs.aggregate() once — three separate DB round-trips on the same
+        # (potentially very large) audit_log table.  A single aggregate() with
+        # conditional Count and Avg retrieves all three scalars in one SQL query.
+        agg = qs.aggregate(
+            total=Count("id"),
+            failed=Count("id", filter=Q(response_status__gte=400)),
+            avg_resp=Avg("response_time_ms"),
+        )
+        total    = agg["total"]
+        failed   = agg["failed"]
+        avg_resp = agg["avg_resp"] or 0
 
         # Group by action
         by_action = {
@@ -1439,13 +1549,15 @@ class HealthCheckView(APIView):
             status=http_status,
         )
 
-# ── LEAD CAPTURE ────────────────────────────────────────────────────────────────────
+
+# ── LEAD CAPTURE ─────────────────────────────────────────────────────────────
+
 @extend_schema(tags=["Lead Capture"])
 @extend_schema_view(
     create=extend_schema(
         summary="Submit a public lead/inquiry",
         description="Public endpoint for the website popup. No authentication required.",
-        auth=[], # This explicitly removes the auth padlock in Swagger
+        auth=[],  # explicitly removes the auth padlock in Swagger
     ),
     list=extend_schema(summary="List all inquiries (Staff only)"),
     retrieve=extend_schema(summary="Get specific inquiry details (Staff only)"),
@@ -1459,11 +1571,11 @@ class InquiryViewSet(viewsets.ModelViewSet):
     POST is open to the public for the website pop-up.
     GET, PATCH, DELETE are restricted to authenticated users.
     """
-    queryset = Inquiry.objects.all().order_by('-created_at')
+    queryset         = Inquiry.objects.all().order_by('-created_at')
     serializer_class = InquirySerializer
     pagination_class = DynamicPageSizePagination
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["parent_name", "email", "phone"]
+    filter_backends  = [filters.SearchFilter]
+    search_fields    = ["parent_name", "email", "phone"]
 
     def get_permissions(self):
         # Open the POST endpoint to the public
