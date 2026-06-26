@@ -8,11 +8,11 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiTypes, inline_serializer
 from rest_framework import serializers as drf_serializers
 
-from ..models import ClassRoom, Term, Student, Attendance, Assignment, DevelopmentReport
+from ..models import ClassRoom, Term, Student, Attendance, Assignment, AcademicReport
 from ..serializers import (
     ClassRoomSerializer, TermSerializer, StudentSerializer,
     AttendanceSerializer, BulkAttendanceSerializer,
-    AssignmentSerializer, DevelopmentReportSerializer
+    AssignmentSerializer, AcademicReportSerializer, AcademicReportListSerializer
 )
 from .base import (
     DynamicPageSizePagination, VersionedCacheMixin,
@@ -420,28 +420,42 @@ class AssignmentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
-@extend_schema(tags=["Development Reports"])
+@extend_schema(tags=["Academic Reports"])
 @extend_schema_view(
     list=extend_schema(
-        summary="List development reports",
+        summary="List academic reports",
         parameters=[
             OpenApiParameter(name="student",      description="Filter by student ID",    required=False, type=OpenApiTypes.STR),
             OpenApiParameter(name="term",         description="Filter by term ID",       required=False, type=OpenApiTypes.INT),
             OpenApiParameter(name="is_published", description="true | false",            required=False, type=OpenApiTypes.BOOL),
+            OpenApiParameter(name="report_type",  description="preschool | elementary",  required=False, type=OpenApiTypes.STR),
             OpenApiParameter(name="page_size",    description="Results per page",        required=False, type=OpenApiTypes.INT),
         ]
     ),
-    create=extend_schema(summary="Write a development report (Staff only)"),
+    create=extend_schema(summary="Create an academic report (Staff only)"),
+    retrieve=extend_schema(summary="Retrieve full academic report (with subject scores)"),
+    update=extend_schema(summary="Update an academic report (Staff only)"),
+    partial_update=extend_schema(summary="Partially update an academic report"),
     destroy=extend_schema(summary="Delete a report (Admin only)"),
 )
-class DevelopmentReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
-    cache_resource     = "reports"
-    queryset           = DevelopmentReport.objects.none()
-    serializer_class   = DevelopmentReportSerializer
+class AcademicReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
+    cache_resource     = "academic_reports"
+    queryset           = AcademicReport.objects.none()
     permission_classes = [IsAuthenticated]
     pagination_class   = DynamicPageSizePagination
     filter_backends    = [filters.SearchFilter]
-    search_fields      = ["comment", "strengths", "areas_to_improve", "student__first_name", "student__last_name"]
+    
+    # FIX: Corrected search fields to match the AcademicReport model exactly
+    search_fields      = ["teacher_comment", "head_teacher_comment", "student__first_name", "student__last_name"]
+
+    def get_serializer_class(self):
+        """
+        Dynamically return the list serializer for list views to optimize payload,
+        and the full serializer (with subject scores and deep data) for creates/retrieves.
+        """
+        if self.action == 'list':
+            return AcademicReportListSerializer
+        return AcademicReportSerializer
 
     def _cache_discriminator(self, request) -> str:
         if is_parent(request.user):
@@ -452,7 +466,13 @@ class DevelopmentReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        qs   = DevelopmentReport.objects.select_related("student", "written_by", "term")
+        
+        # Base query: Only select_related for the ForeignKey lookups needed by BOTH serializers
+        qs = AcademicReport.objects.select_related("student", "written_by", "term")
+
+        # Optimization: Only prefetch the heavy subject scores if we are requesting detailed views
+        if self.action in ['retrieve', 'create', 'update', 'partial_update']:
+            qs = qs.prefetch_related("subject_scores")
 
         if is_parent(user):
             return qs.filter(student__parents=user, is_published=True).order_by('-id')
@@ -463,10 +483,14 @@ class DevelopmentReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
         student      = self.request.query_params.get("student")
         term         = self.request.query_params.get("term")
         is_published = self.request.query_params.get("is_published")
+        report_type  = self.request.query_params.get("report_type")
+
         if student:      qs = qs.filter(student_id=student)
         if term:         qs = qs.filter(term_id=term)
+        if report_type:  qs = qs.filter(report_type=report_type)
         if is_published is not None:
             qs = qs.filter(is_published=is_published.lower() == "true")
+        
         return qs.order_by('-id')
 
     def perform_create(self, serializer):
@@ -491,10 +515,13 @@ class DevelopmentReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     def publish(self, request, pk=None):
         if not is_admin(request.user):
             return Response({"error": "Only admins can publish reports."}, status=403)
+        
         report = self.get_object()
         if report.is_published:
             return Response({"message": "Already published."})
+        
         report.is_published = True
         report.save(update_fields=["is_published"])
         self._bump()
+        
         return Response({"message": f"Report for {report.student.full_name} is now visible to parents."})

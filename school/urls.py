@@ -6,7 +6,7 @@ from .views import (
     LoginView, RegisterView, LogoutView, MeView,
     UserViewSet, ClassRoomViewSet, TermViewSet, StudentViewSet,
     AttendanceViewSet, InvoiceViewSet, PaymentViewSet, CreditNoteViewSet,
-    AnnouncementViewSet, AssignmentViewSet, DevelopmentReportViewSet,
+    AnnouncementViewSet, AssignmentViewSet, AcademicReportViewSet,
     AuditLogViewSet, HealthCheckView, InquiryViewSet, ExpenditureViewSet
 )
 
@@ -21,10 +21,10 @@ router.register("payments",      PaymentViewSet,          basename="payments")
 router.register("credit-notes",  CreditNoteViewSet,       basename="credit-notes")
 router.register("announcements", AnnouncementViewSet,     basename="announcements")
 router.register("assignments",   AssignmentViewSet,       basename="assignments")
-router.register("reports",       DevelopmentReportViewSet, basename="reports")
+router.register("reports",       AcademicReportViewSet,   basename="reports")
 router.register("audit-logs",    AuditLogViewSet,         basename="audit-logs")
 router.register("inquiries",     InquiryViewSet,          basename="inquiries")
-router.register("expenditures",  ExpenditureViewSet,      basename='expenditure')
+router.register("expenditures",  ExpenditureViewSet,      basename="expenditure")
 
 urlpatterns = [
 

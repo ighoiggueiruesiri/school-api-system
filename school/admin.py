@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import (
     User, ClassRoom, Term, Student, Attendance,
-    Invoice, Payment, Announcement, Assignment, DevelopmentReport
+    Invoice, Payment, Announcement, Assignment, AcademicReport, SubjectScore
 )
 
 @admin.register(User)
@@ -66,8 +66,15 @@ class AssignmentAdmin(admin.ModelAdmin):
     list_display  = ["title", "classroom", "teacher", "due_date"]
     list_filter   = ["classroom", "term"]
 
-@admin.register(DevelopmentReport)
-class DevelopmentReportAdmin(admin.ModelAdmin):
-    list_display  = ["student", "term", "written_by", "is_published"]
-    list_filter   = ["is_published", "term"]
+@admin.register(AcademicReport)
+class AcademicReportAdmin(admin.ModelAdmin):
+    list_display  = ["student", "term", "written_by", "report_type", "is_published"]
+    list_filter   = ["is_published", "term", "report_type"]
     list_editable = ["is_published"]
+
+@admin.register(SubjectScore)
+class SubjectScoreAdmin(admin.ModelAdmin):
+    list_display  = ["subject", "report", "cat_score", "exam_score", "total_score", "grade"]
+    list_filter   = ["subject"]
+    search_fields = ["report__student__first_name", "report__student__last_name"]
+    readonly_fields = ["total_score", "grade"]
