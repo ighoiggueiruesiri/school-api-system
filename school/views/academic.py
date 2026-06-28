@@ -427,6 +427,7 @@ class AssignmentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
         parameters=[
             OpenApiParameter(name="student",      description="Filter by student ID",    required=False, type=OpenApiTypes.STR),
             OpenApiParameter(name="term",         description="Filter by term ID",       required=False, type=OpenApiTypes.INT),
+            OpenApiParameter(name="classroom",    description="Filter by classroom ID",  required=False, type=OpenApiTypes.INT),
             OpenApiParameter(name="is_published", description="true | false",            required=False, type=OpenApiTypes.BOOL),
             OpenApiParameter(name="report_type",  description="preschool | elementary",  required=False, type=OpenApiTypes.STR),
             OpenApiParameter(name="page_size",    description="Results per page",        required=False, type=OpenApiTypes.INT),
@@ -484,10 +485,12 @@ class AcademicReportViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
         term         = self.request.query_params.get("term")
         is_published = self.request.query_params.get("is_published")
         report_type  = self.request.query_params.get("report_type")
+        classroom    = self.request.query_params.get("classroom")
 
         if student:      qs = qs.filter(student_id=student)
         if term:         qs = qs.filter(term_id=term)
         if report_type:  qs = qs.filter(report_type=report_type)
+        if classroom:    qs = qs.filter(student__current_class_id=classroom)
         if is_published is not None:
             qs = qs.filter(is_published=is_published.lower() == "true")
         
