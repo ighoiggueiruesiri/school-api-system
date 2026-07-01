@@ -6,7 +6,7 @@ from rest_framework import serializers as drf_serializers
 
 from ..models import User
 from ..serializers import UserSerializer
-from .base import DynamicPageSizePagination, is_admin
+from .base import DynamicPageSizePagination, is_admin, is_admin_or_editor
 
 @extend_schema(tags=["User Management"])
 @extend_schema_view(
@@ -37,11 +37,22 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields      = ["first_name", "last_name", "email"]
 
     def get_queryset(self):
-        qs   = User.objects.select_related("staff_profile")
+        qs = User.objects.select_related("staff_profile")
+
+        if not is_admin_or_editor(self.request.user):
+            # Non-admin/editor roles (teacher, non_academic, parent) may only
+            # ever see their own record through this endpoint.
+            qs = qs.filter(id=self.request.user.id)
+
         role = self.request.query_params.get("role")
         if role:
             qs = qs.filter(role=role)
         return qs.order_by('-id')
+
+    # NOTE: get_queryset() above already scopes non-admin/editor users to
+    # their own record, so retrieve/update/partial_update on someone else's
+    # id will 404 via DRF's default get_object() — we don't leak existence
+    # of other users' ids to non-privileged callers.
 
     @extend_schema(
         summary="Create an Admin, Editor, Teacher, or Non-Academic account (Admin only)",

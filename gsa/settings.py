@@ -162,3 +162,10 @@ SPECTACULAR_SETTINGS = {
     "TITLE":   "Giant Step Academy API",
     "VERSION": "1.0.0",
 }
+
+import sys
+if "test" in sys.argv:
+    DATABASES["default"] = dj_database_url.config(
+        default=config("DATABASE_URL_TEST"),
+        conn_max_age=0,
+    )
