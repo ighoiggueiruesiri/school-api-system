@@ -31,7 +31,7 @@ python manage.py createsuperuser
 # 6. Start the server
 python manage.py runserver 
 gunicorn gsa.wsgi:application #production
-waitress-serve --listen=127.0.0.1:8000 gsa.wsgi:application #local
+waitress-serve --listen=127.0.0.1:8000 gsa.wsgi:application #local 
 ```
 
 Open your browser:
