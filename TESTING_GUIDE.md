@@ -29,7 +29,7 @@ python manage.py createsuperuser
 # Password:   Admin1234!
 
 # 6. Start the server
-python manage.py runserver
+python manage.py runserver 
 gunicorn gsa.wsgi:application #production
 waitress-serve --listen=127.0.0.1:8000 gsa.wsgi:application #local
 ```
