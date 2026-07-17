@@ -25,6 +25,10 @@ from ..base import DynamicPageSizePagination, VersionedCacheMixin, is_admin, is_
 )
 class PaymentViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     cache_resource     = "payments"
+    # A payment write updates the related Invoice's amount_paid/status
+    # directly on the model (see perform_create below), so the invoice
+    # cache must be invalidated too or stale balances/status keep serving.
+    related_cache_resources = ("invoices",)
     queryset           = Payment.objects.none()
     serializer_class   = PaymentSerializer
     permission_classes = [IsAuthenticated]

@@ -29,6 +29,10 @@ from ..base import DynamicPageSizePagination, VersionedCacheMixin, is_admin, is_
 )
 class InvoiceViewSet(VersionedCacheMixin, viewsets.ModelViewSet):
     cache_resource     = "invoices"
+    # If deleting an Invoice cascades to its Payments/CreditNotes, their
+    # cache buckets need invalidating too. Harmless no-op if they're
+    # PROTECTed instead (the delete fails before _bump() ever runs).
+    related_cache_resources = ("payments", "credit_notes")
     queryset           = Invoice.objects.none()
     serializer_class   = InvoiceSerializer
     permission_classes = [IsAuthenticated]

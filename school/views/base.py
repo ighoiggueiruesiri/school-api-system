@@ -32,6 +32,11 @@ class VersionedCacheMixin:
 
     cache_resource: str = ""   # subclass must set this
 
+    # Other cache_resource buckets that must also be invalidated when this
+    # viewset writes — e.g. a Payment write changes Invoice.amount_paid/status
+    # directly on the model, so PaymentViewSet must also bump "invoices".
+    related_cache_resources: tuple = ()
+
     # ── Key helpers ───────────────────────────────────────────────────────────
 
     def _cache_discriminator(self, request) -> str:
@@ -70,6 +75,8 @@ class VersionedCacheMixin:
 
     def _bump(self):
         bump_cache_version(self.cache_resource)
+        for resource in self.related_cache_resources:
+            bump_cache_version(resource)
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
